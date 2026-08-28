@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KartBoard — Controller</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="control-shell"><div class="control-wrap">
+  <header class="control-top"><div><div class="brand"><span class="brand-mark">↗</span>KartBoard</div><div class="eyebrow" style="margin-top:5px">Practice controller</div></div><div class="control-top-actions"><button class="button ghost" id="openBoard">↗ <span>Open public board</span></button><button class="button" id="edit">⚙ <span>Day setup</span></button></div></header>
+  <main class="dashboard">
+    <section>
+      <div class="card session-card">
+        <div class="session-meta"><span class="eyebrow session-status" id="status">Ready to begin</span><span class="pill" id="venue">Ipswich Kart Club</span></div>
+        <div class="session-title" id="current">Cadet P</div>
+        <div class="control-clock" id="timer">09:00</div><div class="clock-caption">Approximate session time remaining</div>
+      </div>
+      <button class="main-action" id="mainAction"><span id="mainActionLabel">Start first session</span> <span>→</span></button>
+    </section>
+    <aside class="side-stack">
+      <section class="card side-card"><div class="card-head"><h2>Coming up</h2><span class="eyebrow">Rotation</span></div><div class="next-name" id="next">Cadet</div><div class="then-name">Then <strong id="then">Junior P</strong></div></section>
+      <section class="card side-card"><div class="card-head"><h2>Quick controls</h2></div><div class="quick-grid"><button class="button" id="pause">Pause</button><button class="button" data-action="addMinute">+ 1 minute</button><button class="button" data-action="changeover">Changeover</button><button class="button" data-action="previous">Previous class</button><button class="button" data-action="break">Take a break</button><button class="button warn" data-action="finish">Finish day</button></div></section>
+      <section class="card side-card"><div class="card-head"><h2>Paddock notice</h2></div><form class="notice-form" id="noticeForm"><input id="noticeInput" placeholder="e.g. Lunch at 12:30"><button class="button primary">Post</button></form></section>
+    </aside>
+  </main>
+  <section class="card rotation-card" id="rotationCard"><div class="card-head"><div><h2 id="rotationTitle">Today's running order</h2><span class="eyebrow" id="dayLabel">Saturday Practice</span></div><div class="rotation-actions"><span class="edit-hint" id="editHint">Hold a class to change</span><button class="button" id="cancelRotation" hidden>Cancel</button><button class="button primary" id="saveRotation" hidden>Done</button></div></div><div class="rotation" id="rotation"></div><div class="inline-add" id="inlineAdd" hidden><div class="section-label"><span>Add another class</span></div><div class="class-chips" id="inlineClassChips"></div><div class="custom-add"><input id="inlineCustomClass" placeholder="Custom class name"><button type="button" class="button" id="inlineAddCustom">Add</button></div></div><p class="rotation-help" id="rotationHelp" hidden>Drag tiles into order. Changes will not interrupt the current session.</p></section>
+</div>
+<dialog id="setup" class="setup-dialog"><form class="dialog-inner" id="setupForm"><div class="dialog-head"><div><div class="eyebrow">Before practice</div><h2>Set up today’s rotation</h2><p>Press and drag any class tile into a new position.</p></div><button type="button" class="close" id="closeSetup" aria-label="Close setup">×</button></div>
+  <div class="setup-layout"><section>
+    <div class="section-label"><span>Running order</span><span id="classCount">0 classes</span></div>
+    <div class="setup-rotation" id="setupRotation"></div>
+    <div class="add-panel"><div class="section-label"><span>Add a class</span></div><div class="class-chips" id="classChips"></div><div class="custom-add"><input id="customClass" placeholder="Custom class name"><button type="button" class="button" id="addCustom">Add</button></div></div>
+  </section><aside class="setup-details">
+    <div class="field"><label for="setupVenue">Venue</label><input id="setupVenue" required></div><div class="field"><label for="setupDay">Practice label</label><input id="setupDay" required></div><div class="field"><label for="setupMinutes">Usual session length</label><div class="minutes-input"><input id="setupMinutes" type="number" min="1" max="30" required><span>minutes</span></div></div>
+    <div class="setup-preview"><div class="eyebrow">Public board preview</div><strong id="previewCurrent">Cadet P</strong><span>Up next: <b id="previewNext">Cadet</b></span></div>
+  </aside></div>
+  <div class="dialog-actions setup-actions"><button type="button" class="button" id="cancelSetup">Cancel</button><button class="button primary" id="saveSetup">Save running order</button></div></form></dialog>
+<dialog id="editClass"><form class="dialog-inner compact-dialog" id="editClassForm"><div class="dialog-head"><div><div class="eyebrow">Edit class</div><h2>Class name</h2></div><button type="button" class="close" id="closeEditClass">×</button></div><div class="field"><label for="editClassName">Name shown to everyone</label><input id="editClassName" required maxlength="40"></div><div class="dialog-actions"><button type="button" class="button" id="cancelEditClass">Cancel</button><button class="button primary">Save</button></div></form></dialog>
+<div class="toast" id="toast">Updated</div><script type="module" src="/control.js"></script></body></html>

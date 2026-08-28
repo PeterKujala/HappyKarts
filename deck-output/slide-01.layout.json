@@ -1,0 +1,639 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/g1614t",
+    "id": "g1614t",
+    "slide": 1,
+    "layoutId": "f64353e1-bbbc-4e62-880d-dc6f64b754d1",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "0d632e20-ac34-47b3-ba02-defc06a58339",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F4F6F1",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "f64353e1-bbbc-4e62-880d-dc6f64b754d1",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "0d632e20-ac34-47b3-ba02-defc06a58339",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "0d632e20-ac34-47b3-ba02-defc06a58339",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/p8bi1cvm",
+      "id": "1",
+      "bbox": [
+        0,
+        0,
+        575,
+        720
+      ],
+      "geometry": "rect",
+      "fillColor": "#123F31",
+      "lineColor": "#123F31",
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/25kjqxcv",
+      "id": "2",
+      "bbox": [
+        0,
+        0,
+        12,
+        720
+      ],
+      "geometry": "rect",
+      "fillColor": "#C5FF2D",
+      "lineColor": "#C5FF2D",
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/n6t0z2dg",
+      "id": "3",
+      "bbox": [
+        64,
+        52,
+        310,
+        40
+      ],
+      "geometry": "rect",
+      "text": "↗  KartBoard",
+      "textPreview": "↗  KartBoard",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Arial",
+        "color": "#FFFFFF",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "↗  KartBoard"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "↗  KartBoard",
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Arial",
+            "color": "#FFFFFF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "↗  KartBoard",
+              "fontSize": 22,
+              "typeface": "Arial",
+              "color": "#FFFFFF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cvm1w7ud",
+      "id": "4",
+      "bbox": [
+        64,
+        178,
+        445,
+        250
+      ],
+      "geometry": "rect",
+      "text": "A clearer\npractice day\nat Ipswich",
+      "textPreview": "A clearer | practice day | at Ipswich",
+      "resolvedFontSize": 56,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 56,
+        "typeface": "Arial",
+        "color": "#FFFFFF",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "A clearer"
+          },
+          {
+            "index": 2,
+            "text": "practice day"
+          },
+          {
+            "index": 3,
+            "text": "at Ipswich"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "A clearer",
+          "resolvedTextStyle": {
+            "fontSize": 56,
+            "typeface": "Arial",
+            "color": "#FFFFFF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "A clearer",
+              "fontSize": 56,
+              "typeface": "Arial",
+              "color": "#FFFFFF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "practice day",
+          "resolvedTextStyle": {
+            "fontSize": 56,
+            "typeface": "Arial",
+            "color": "#FFFFFF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "practice day",
+              "fontSize": 56,
+              "typeface": "Arial",
+              "color": "#FFFFFF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 3,
+          "text": "at Ipswich",
+          "resolvedTextStyle": {
+            "fontSize": 56,
+            "typeface": "Arial",
+            "color": "#FFFFFF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "at Ipswich",
+              "fontSize": 56,
+              "typeface": "Arial",
+              "color": "#FFFFFF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xwv2pcvi",
+      "id": "5",
+      "bbox": [
+        64,
+        472,
+        405,
+        74
+      ],
+      "geometry": "rect",
+      "text": "A simple live board for the KAC, drivers and families.",
+      "textPreview": "A simple live board for the KAC, drivers and families.",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Arial",
+        "color": "#DDE9E3",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "A simple live board for the KAC, drivers"
+          },
+          {
+            "index": 2,
+            "text": "and families."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "A simple live board for the KAC, drivers and families.",
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Arial",
+            "color": "#DDE9E3",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "A simple live board for the KAC, drivers and families.",
+              "fontSize": 22,
+              "typeface": "Arial",
+              "color": "#DDE9E3",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/atkjuhc7",
+      "id": "6",
+      "bbox": [
+        64,
+        618,
+        410,
+        22
+      ],
+      "geometry": "rect",
+      "text": "TRIAL PROPOSAL  •  IPSWICH KART CLUB",
+      "textPreview": "TRIAL PROPOSAL  •  IPSWICH KART CLUB",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C5FF2D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "TRIAL PROPOSAL  •  IPSWICH KART CLUB"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "TRIAL PROPOSAL  •  IPSWICH KART CLUB",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C5FF2D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "TRIAL PROPOSAL  •  IPSWICH KART CLUB",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C5FF2D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/budkn2ds",
+      "id": "7",
+      "bbox": [
+        620,
+        66,
+        596,
+        555
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/pozep8jm",
+      "id": "8",
+      "bbox": [
+        644,
+        90,
+        548,
+        307
+      ],
+      "geometry": "roundRect",
+      "alt": "KartBoard public board showing the live class, time remaining and next classes",
+      "contentType": "image/jpeg",
+      "imageFit": "cover",
+      "imageMask": {
+        "geometry": "roundRect",
+        "adjustmentList": [
+          {
+            "name": "adj",
+            "formula": "val 3909"
+          }
+        ]
+      },
+      "asset": {
+        "assetId": "d15a5a4a-db66-4fb1-90f3-a2bf6f320fdc",
+        "contentType": "image/jpeg",
+        "byteLength": 30632
+      }
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/t0ritsve",
+      "id": "9",
+      "bbox": [
+        656,
+        435,
+        470,
+        42
+      ],
+      "geometry": "rect",
+      "text": "One shared view.",
+      "textPreview": "One shared view.",
+      "resolvedFontSize": 30,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 30,
+        "typeface": "Arial",
+        "color": "#123F31",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "One shared view."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "One shared view.",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#123F31",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "One shared view.",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#123F31",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xgzqt4fq",
+      "id": "10",
+      "bbox": [
+        656,
+        492,
+        500,
+        0.01
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#D8DED8",
+      "lineWidth": 1
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wfq9kzy5",
+      "id": "11",
+      "bbox": [
+        656,
+        514,
+        500,
+        68
+      ],
+      "geometry": "rect",
+      "text": "Who is on track  /  who is next  /  approximately how long remains",
+      "textPreview": "Who is on track  /  who is next  /  approximately how long remains",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#657169",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Who is on track  /  who is next  /  approximately how long"
+          },
+          {
+            "index": 2,
+            "text": "remains"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Who is on track  /  who is next  /  approximately how long remains",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#657169",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Who is on track  /  who is next  /  approximately how long remains",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#657169",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

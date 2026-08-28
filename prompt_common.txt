@@ -1,0 +1,141 @@
+I want to make this project portable between ChatGPT Work sessions and between my computers.
+
+The source code and generated project artifacts are already stored in a OneDrive-synchronised project folder. Your task is to create a persistent project-memory system inside the ROOT of that existing project folder so that a new ChatGPT Work session, with no access to this conversation, can understand the project and continue working on it with minimal loss of context.
+
+Do not modify the application itself as part of this task.
+
+## 1. Inspect the project
+
+First inspect the entire existing project directory, including source code, configuration, documentation, presentations, images, videos, prototypes, and other relevant artifacts.
+
+Also use the full context available in THIS conversation, including our earlier discussions, requirements, design reasoning, decisions, experiments, rejected ideas, deployment discussions, and future intentions.
+
+Reconcile the conversation with the actual current files. Where they disagree, treat the current implementation as authoritative for what presently exists, while preserving useful historical reasoning where relevant.
+
+## 2. Create `PROJECT_CONTEXT.md`
+
+Create a file named:
+
+`PROJECT_CONTEXT.md`
+
+in the ROOT of the existing project directory.
+
+This is the project's persistent long-term memory and should allow a fresh AI coding session to understand not only what the project currently contains, but why it exists and how we arrived here.
+
+Include, where applicable:
+
+- Project name and concise description
+- Original problem being solved
+- Intended users
+- Real-world operating environment
+- Product vision
+- MVP objective
+- User workflows
+- Race-controller workflow
+- Driver/public-display workflow
+- Functional requirements
+- Non-functional requirements
+- UI/UX intentions and reasoning
+- Current architecture
+- Frontend structure
+- Backend/state-management approach, if present
+- Data model/state model
+- Important source files and what they do
+- How the controller and public display interact
+- Timing/session behaviour
+- Multi-track/multi-event considerations
+- Technology choices and why they were made
+- Local development/run instructions
+- Current deployment/hosting status
+- Deployment ideas discussed, including low-cost hosting options
+- Security/authentication considerations
+- Important implementation decisions
+- Constraints and assumptions
+- Approaches considered but rejected or deferred, and why
+- Known bugs or limitations
+- Current unfinished work
+- Ideas discussed but not yet implemented
+- Future feature possibilities
+- Generated presentations, videos, images or supporting artifacts and their purpose
+- Any terminology that has a specific meaning within this project
+- Important preferences or requirements I expressed during development
+- Current recommended next steps
+
+Do NOT simply dump or summarise the conversation chronologically.
+
+Synthesize it into high-quality technical/product documentation. Preserve reasoning that would otherwise be difficult to reconstruct from the source code.
+
+Clearly distinguish between:
+
+**IMPLEMENTED** — demonstrably exists in the current project  
+**DECIDED** — agreed direction but may not yet be implemented  
+**PROPOSED** — discussed possibility  
+**OPEN QUESTION** — unresolved
+
+Do not invent information. If something cannot be determined, explicitly mark it as unknown or unresolved.
+
+## 3. Create `CHANGELOG.md`
+
+Also create:
+
+`CHANGELOG.md`
+
+in the project root.
+
+Reconstruct the meaningful development history as accurately as possible from this conversation and the existing project.
+
+Focus on significant changes, features, design decisions, experiments and milestones rather than every minor edit.
+
+At the bottom create a section called:
+
+`## Current Work / Next Actions`
+
+containing the current outstanding work.
+
+## 4. Add AI continuity instructions
+
+Near the beginning of `PROJECT_CONTEXT.md`, include a section called:
+
+`## Instructions for AI Assistants`
+
+It should explain that:
+
+1. This file is the persistent context/memory for the project.
+2. An AI assistant should read this file before making substantial project changes.
+3. It should inspect the actual current code rather than assuming this document is perfectly current.
+4. Actual code is authoritative regarding current implementation.
+5. Important product, architectural, requirements or implementation decisions made during future sessions should be incorporated back into `PROJECT_CONTEXT.md`.
+6. Completed or materially changed work should be recorded in `CHANGELOG.md`.
+7. Documentation should be updated rather than endlessly appended, so obsolete information does not accumulate.
+8. Historical decisions that remain useful should be preserved, especially the reasoning behind them.
+9. The assistant must not silently reinterpret IMPLEMENTED, DECIDED, PROPOSED or OPEN QUESTION items.
+10. Before ending a substantial development session, the assistant should consider whether these files need updating.
+
+## 5. Make the documentation portable
+
+Do not include computer-specific absolute paths unless absolutely necessary.
+
+Prefer relative paths from the project root.
+
+The documentation must remain useful when the OneDrive directory appears at a different local path on another computer.
+
+Do not rely on access to this ChatGPT conversation after creating the documentation.
+
+## 6. Quality check
+
+After creating both files:
+
+- reread them;
+- compare them against the existing application;
+- compare them against the context available in this conversation;
+- correct omissions, contradictions or unsupported assumptions;
+- make sure another competent developer or AI assistant could understand the project without seeing this conversation.
+
+Finally, tell me:
+
+1. the exact project directory in which you created the files;
+2. which files you created or modified;
+3. approximately how comprehensive the recovered context is;
+4. anything important from our historical conversation that you could not confidently reconstruct.
+
+Do not make changes to the application source code during this task.

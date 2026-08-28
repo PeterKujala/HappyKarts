@@ -1,0 +1,558 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/9m38gg",
+    "id": "9m38gg",
+    "slide": 3,
+    "layoutId": "f64353e1-bbbc-4e62-880d-dc6f64b754d1",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "0d632e20-ac34-47b3-ba02-defc06a58339",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F4F6F1",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "f64353e1-bbbc-4e62-880d-dc6f64b754d1",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "0d632e20-ac34-47b3-ba02-defc06a58339",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "0d632e20-ac34-47b3-ba02-defc06a58339",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3qh0ru9w",
+      "id": "1",
+      "bbox": [
+        64,
+        34,
+        580,
+        22
+      ],
+      "geometry": "rect",
+      "text": "THE PUBLIC BOARD",
+      "textPreview": "THE PUBLIC BOARD",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#123F31",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "THE PUBLIC BOARD"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "THE PUBLIC BOARD",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#123F31",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "THE PUBLIC BOARD",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#123F31",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4rqh0zah",
+      "id": "2",
+      "bbox": [
+        64,
+        70,
+        1020,
+        64
+      ],
+      "geometry": "rect",
+      "text": "Everyone gets the same answer at a glance.",
+      "textPreview": "Everyone gets the same answer at a glance.",
+      "resolvedFontSize": 42,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 42,
+        "typeface": "Arial",
+        "color": "#101713",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Everyone gets the same answer at a glance."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Everyone gets the same answer at a glance.",
+          "resolvedTextStyle": {
+            "fontSize": 42,
+            "typeface": "Arial",
+            "color": "#101713",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Everyone gets the same answer at a glance.",
+              "fontSize": 42,
+              "typeface": "Arial",
+              "color": "#101713",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5szit4r2",
+      "id": "3",
+      "bbox": [
+        64,
+        140,
+        1080,
+        42
+      ],
+      "geometry": "rect",
+      "text": "View-only. No app. No account. Open it from a QR code on any phone, tablet or laptop on the same network.",
+      "textPreview": "View-only. No app. No account. Open it from a QR code on any phone, tablet or laptop on the same network.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#657169",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "View-only. No app. No account. Open it from a QR code on any phone, tablet or laptop on the same network."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "View-only. No app. No account. Open it from a QR code on any phone, tablet or laptop on the same network.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#657169",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "View-only. No app. No account. Open it from a QR code on any phone, tablet or laptop on the same network.",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#657169",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qt8z29sn",
+      "id": "4",
+      "bbox": [
+        64,
+        214,
+        816,
+        412
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/m98ze503",
+      "id": "5",
+      "bbox": [
+        82,
+        232,
+        780,
+        376
+      ],
+      "geometry": "roundRect",
+      "alt": "Desktop public board with current class, countdown, next class and following class",
+      "contentType": "image/jpeg",
+      "imageFit": "cover",
+      "imageMask": {
+        "geometry": "roundRect",
+        "adjustmentList": [
+          {
+            "name": "adj",
+            "formula": "val 3191"
+          }
+        ]
+      },
+      "asset": {
+        "assetId": "c13d9165-cdb4-4012-a7f6-7c59099b6b44",
+        "contentType": "image/jpeg",
+        "byteLength": 30632
+      }
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sva14jat",
+      "id": "6",
+      "bbox": [
+        930,
+        202,
+        226,
+        446
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#101713",
+      "lineColor": "#101713",
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dwjixore",
+      "id": "7",
+      "bbox": [
+        943,
+        215,
+        200,
+        420
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#123F31",
+      "lineColor": "#123F31",
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/z6hg3qhs",
+      "id": "8",
+      "bbox": [
+        943,
+        215,
+        200,
+        420
+      ],
+      "geometry": "roundRect",
+      "alt": "KartBoard public board displayed on a phone-sized screen",
+      "contentType": "image/jpeg",
+      "imageFit": "cover",
+      "imageMask": {
+        "geometry": "roundRect",
+        "adjustmentList": [
+          {
+            "name": "adj",
+            "formula": "val 6000"
+          }
+        ]
+      },
+      "asset": {
+        "assetId": "0f24dc4b-f340-48ea-9a51-05f10d348878",
+        "contentType": "image/jpeg",
+        "byteLength": 19747
+      }
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7yx0ja94",
+      "id": "9",
+      "bbox": [
+        1004,
+        208,
+        76,
+        5
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#101713",
+      "lineColor": "#101713",
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3a54v2dk",
+      "id": "10",
+      "bbox": [
+        64,
+        677,
+        1152,
+        0.01
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#D8DED8",
+      "lineWidth": 1
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2pwn2xcz",
+      "id": "11",
+      "bbox": [
+        64,
+        688,
+        420,
+        16
+      ],
+      "geometry": "rect",
+      "text": "KARTBOARD  •  IPSWICH PRACTICE DAY",
+      "textPreview": "KARTBOARD  •  IPSWICH PRACTICE DAY",
+      "resolvedFontSize": 10,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 10,
+        "typeface": "Arial",
+        "color": "#657169",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "KARTBOARD  •  IPSWICH PRACTICE DAY"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "KARTBOARD  •  IPSWICH PRACTICE DAY",
+          "resolvedTextStyle": {
+            "fontSize": 10,
+            "typeface": "Arial",
+            "color": "#657169",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "KARTBOARD  •  IPSWICH PRACTICE DAY",
+              "fontSize": 10,
+              "typeface": "Arial",
+              "color": "#657169",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pc7mxsvq",
+      "id": "12",
+      "bbox": [
+        1160,
+        688,
+        56,
+        16
+      ],
+      "geometry": "rect",
+      "text": "03",
+      "textPreview": "03",
+      "resolvedFontSize": 10,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 10,
+        "typeface": "Arial",
+        "color": "#657169",
+        "bold": true,
+        "alignment": "right",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "03"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "03",
+          "resolvedTextStyle": {
+            "fontSize": 10,
+            "typeface": "Arial",
+            "color": "#657169",
+            "bold": true,
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "03",
+              "fontSize": 10,
+              "typeface": "Arial",
+              "color": "#657169",
+              "bold": true,
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KartBoard — Live Practice</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="board">
+  <header class="board-header">
+    <div class="brand"><span class="brand-mark">↗</span>KartBoard <span class="pill"><span class="dot"></span>Live</span></div>
+    <div class="venue"><strong id="venue">Ipswich Kart Club</strong><span id="dayLabel">Saturday Practice</span></div>
+  </header>
+  <main class="board-main">
+    <section class="on-track">
+      <div class="eyebrow" id="stateLabel">On track</div>
+      <div class="class-name" id="current">Senior Restricted</div>
+      <div class="timer-row"><div class="timer" id="timer">09:00</div><div class="timer-label">approximate time remaining</div></div>
+    </section>
+    <aside class="queue">
+      <div class="queue-item"><div class="queue-label">Up next</div><div class="queue-name" id="next">Senior Open</div></div>
+      <div class="queue-item"><div class="queue-label">Then</div><div class="queue-name" id="then">Cadet P</div></div>
+      <div class="notice" id="notice"></div>
+    </aside>
+  </main>
+  <footer class="board-footer"><span>Times are approximate · Listen for track announcements</span><span id="localTime"></span></footer>
+  <section class="state-overlay" id="overlay"><div><div class="eyebrow" id="overlayEyebrow">Practice update</div><h1 id="overlayTitle">Ready to begin</h1><p id="overlayCopy">Waiting for the first session</p></div></section>
+  <script type="module" src="/board.js"></script>
+</body></html>

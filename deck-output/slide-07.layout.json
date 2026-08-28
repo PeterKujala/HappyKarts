@@ -1,0 +1,1146 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/1kyv8o",
+    "id": "1kyv8o",
+    "slide": 7,
+    "layoutId": "f64353e1-bbbc-4e62-880d-dc6f64b754d1",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "0d632e20-ac34-47b3-ba02-defc06a58339",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F4F6F1",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "f64353e1-bbbc-4e62-880d-dc6f64b754d1",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "0d632e20-ac34-47b3-ba02-defc06a58339",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "0d632e20-ac34-47b3-ba02-defc06a58339",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/03elg3ux",
+      "id": "1",
+      "bbox": [
+        64,
+        34,
+        580,
+        22
+      ],
+      "geometry": "rect",
+      "text": "THE PROPOSED NEXT STEP",
+      "textPreview": "THE PROPOSED NEXT STEP",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#123F31",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "THE PROPOSED NEXT STEP"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "THE PROPOSED NEXT STEP",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#123F31",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "THE PROPOSED NEXT STEP",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#123F31",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/z2547yds",
+      "id": "2",
+      "bbox": [
+        64,
+        70,
+        1040,
+        70
+      ],
+      "geometry": "rect",
+      "text": "Would you trial KartBoard for one practice day?",
+      "textPreview": "Would you trial KartBoard for one practice day?",
+      "resolvedFontSize": 44,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 44,
+        "typeface": "Arial",
+        "color": "#101713",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Would you trial KartBoard for one practice day?"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Would you trial KartBoard for one practice day?",
+          "resolvedTextStyle": {
+            "fontSize": 44,
+            "typeface": "Arial",
+            "color": "#101713",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Would you trial KartBoard for one practice day?",
+              "fontSize": 44,
+              "typeface": "Arial",
+              "color": "#101713",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/e1w3etc7",
+      "id": "3",
+      "bbox": [
+        64,
+        145,
+        840,
+        36
+      ],
+      "geometry": "rect",
+      "text": "A practical test, with no commitment and no change to official procedure.",
+      "textPreview": "A practical test, with no commitment and no change to official procedure.",
+      "resolvedFontSize": 19,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 19,
+        "typeface": "Arial",
+        "color": "#657169",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "A practical test, with no commitment and no change to official procedure."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "A practical test, with no commitment and no change to official procedure.",
+          "resolvedTextStyle": {
+            "fontSize": 19,
+            "typeface": "Arial",
+            "color": "#657169",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "A practical test, with no commitment and no change to official procedure.",
+              "fontSize": 19,
+              "typeface": "Arial",
+              "color": "#657169",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9s7md8vu",
+      "id": "4",
+      "bbox": [
+        64,
+        246,
+        500,
+        0.01
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#D8DED8",
+      "lineWidth": 2
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ory5k3u9",
+      "id": "5",
+      "bbox": [
+        64,
+        241,
+        12,
+        12
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#123F31",
+      "lineColor": "#123F31",
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nqp4bydo",
+      "id": "6",
+      "bbox": [
+        64,
+        271,
+        52,
+        24
+      ],
+      "geometry": "rect",
+      "text": "01",
+      "textPreview": "01",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "Arial",
+        "color": "#657169",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "01"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "01",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "Arial",
+            "color": "#657169",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "01",
+              "fontSize": 13,
+              "typeface": "Arial",
+              "color": "#657169",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/mpg3idc3",
+      "id": "7",
+      "bbox": [
+        64,
+        304,
+        142,
+        102
+      ],
+      "geometry": "rect",
+      "text": "Run beside normal announcements",
+      "textPreview": "Run beside normal announcements",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#101713",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Run beside"
+          },
+          {
+            "index": 2,
+            "text": "normal"
+          },
+          {
+            "index": 3,
+            "text": "announcements"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Run beside normal announcements",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#101713",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Run beside normal announcements",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#101713",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xwrmhsvq",
+      "id": "8",
+      "bbox": [
+        246,
+        241,
+        12,
+        12
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#C5FF2D",
+      "lineColor": "#C5FF2D",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wvy5onu5",
+      "id": "9",
+      "bbox": [
+        246,
+        271,
+        52,
+        24
+      ],
+      "geometry": "rect",
+      "text": "02",
+      "textPreview": "02",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "Arial",
+        "color": "#657169",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "02"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "02",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "Arial",
+            "color": "#657169",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "02",
+              "fontSize": 13,
+              "typeface": "Arial",
+              "color": "#657169",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i1kvq1wn",
+      "id": "10",
+      "bbox": [
+        246,
+        304,
+        142,
+        102
+      ],
+      "geometry": "rect",
+      "text": "Let drivers and families scan the public board",
+      "textPreview": "Let drivers and families scan the public board",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#101713",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Let drivers and"
+          },
+          {
+            "index": 2,
+            "text": "families scan"
+          },
+          {
+            "index": 3,
+            "text": "the public board"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Let drivers and families scan the public board",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#101713",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Let drivers and families scan the public board",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#101713",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/j2twjmx8",
+      "id": "11",
+      "bbox": [
+        428,
+        241,
+        12,
+        12
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#123F31",
+      "lineColor": "#123F31",
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4n2dsret",
+      "id": "12",
+      "bbox": [
+        428,
+        271,
+        52,
+        24
+      ],
+      "geometry": "rect",
+      "text": "03",
+      "textPreview": "03",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "Arial",
+        "color": "#657169",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "03"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "03",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "Arial",
+            "color": "#657169",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "03",
+              "fontSize": 13,
+              "typeface": "Arial",
+              "color": "#657169",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5obelwve",
+      "id": "13",
+      "bbox": [
+        428,
+        304,
+        142,
+        102
+      ],
+      "geometry": "rect",
+      "text": "Review feedback at the end of the day",
+      "textPreview": "Review feedback at the end of the day",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#101713",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Review"
+          },
+          {
+            "index": 2,
+            "text": "feedback at the"
+          },
+          {
+            "index": 3,
+            "text": "end of the day"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Review feedback at the end of the day",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#101713",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Review feedback at the end of the day",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#101713",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6pkvu1wz",
+      "id": "14",
+      "bbox": [
+        64,
+        462,
+        500,
+        101
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#123F31",
+      "lineColor": "#123F31",
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rqtwn6dk",
+      "id": "15",
+      "bbox": [
+        88,
+        482,
+        210,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Success is simple:",
+      "textPreview": "Success is simple:",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14,
+        "typeface": "Arial",
+        "color": "#C5FF2D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Success is simple:"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Success is simple:",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "typeface": "Arial",
+            "color": "#C5FF2D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Success is simple:",
+              "fontSize": 14,
+              "typeface": "Arial",
+              "color": "#C5FF2D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sr2dwbe5",
+      "id": "16",
+      "bbox": [
+        88,
+        512,
+        426,
+        40
+      ],
+      "geometry": "rect",
+      "text": "fewer repeated questions and a smoother paddock rhythm.",
+      "textPreview": "fewer repeated questions and a smoother paddock rhythm.",
+      "resolvedFontSize": 16.67,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 21,
+        "typeface": "Arial",
+        "color": "#FFFFFF",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 0.79,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "fewer repeated questions and a smoother paddock"
+          },
+          {
+            "index": 2,
+            "text": "rhythm."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "fewer repeated questions and a smoother paddock rhythm.",
+          "resolvedTextStyle": {
+            "fontSize": 21,
+            "typeface": "Arial",
+            "color": "#FFFFFF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "fewer repeated questions and a smoother paddock rhythm.",
+              "fontSize": 21,
+              "typeface": "Arial",
+              "color": "#FFFFFF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/tsvepgva",
+      "id": "17",
+      "bbox": [
+        632,
+        208,
+        584,
+        383
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/tgfmd4vi",
+      "id": "18",
+      "bbox": [
+        660,
+        232,
+        528,
+        330
+      ],
+      "geometry": "roundRect",
+      "alt": "Side-by-side QR codes for the public board and KAC controller",
+      "contentType": "image/png",
+      "imageFit": "contain",
+      "imageMask": {
+        "geometry": "roundRect",
+        "adjustmentList": [
+          {
+            "name": "adj",
+            "formula": "val 3636"
+          }
+        ]
+      },
+      "asset": {
+        "assetId": "0c4204ca-b69d-4342-bfd6-fc6fd5d0a254",
+        "contentType": "image/png",
+        "byteLength": 41139
+      }
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nu9cb2x0",
+      "id": "19",
+      "bbox": [
+        674,
+        566,
+        500,
+        22
+      ],
+      "geometry": "rect",
+      "text": "The laptop generates fresh QR codes for the network in use.",
+      "textPreview": "The laptop generates fresh QR codes for the network in use.",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "Arial",
+        "color": "#657169",
+        "alignment": "center",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The laptop generates fresh QR codes for the network in use."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The laptop generates fresh QR codes for the network in use.",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "Arial",
+            "color": "#657169",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The laptop generates fresh QR codes for the network in use.",
+              "fontSize": 13,
+              "typeface": "Arial",
+              "color": "#657169",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/by5sjids",
+      "id": "20",
+      "bbox": [
+        0,
+        654,
+        1280,
+        66
+      ],
+      "geometry": "rect",
+      "fillColor": "#C5FF2D",
+      "lineColor": "#C5FF2D",
+      "lineWidth": 0
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qxwbqdcn",
+      "id": "21",
+      "bbox": [
+        64,
+        676,
+        1152,
+        24
+      ],
+      "geometry": "rect",
+      "text": "ONE DAY  •  EXISTING ANNOUNCEMENTS STAY  •  STOP AT ANY TIME",
+      "textPreview": "ONE DAY  •  EXISTING ANNOUNCEMENTS STAY  •  STOP AT ANY TIME",
+      "resolvedFontSize": 15,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 15,
+        "typeface": "Arial",
+        "color": "#123F31",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "ONE DAY  •  EXISTING ANNOUNCEMENTS STAY  •  STOP AT ANY TIME"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "ONE DAY  •  EXISTING ANNOUNCEMENTS STAY  •  STOP AT ANY TIME",
+          "resolvedTextStyle": {
+            "fontSize": 15,
+            "typeface": "Arial",
+            "color": "#123F31",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "ONE DAY  •  EXISTING ANNOUNCEMENTS STAY  •  STOP AT ANY TIME",
+              "fontSize": 15,
+              "typeface": "Arial",
+              "color": "#123F31",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

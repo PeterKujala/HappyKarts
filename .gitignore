@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Generated working directories
+.deck-build/
+.video-build/
+
+# Runtime files
+*.pid
+*.backup
+
+# Inspection and temporary output
+*.inspect.ndjson
+*.tmp
+*.log
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
