@@ -46,3 +46,9 @@ KartBoard communicates approximate practice-day sequencing only. It is not offic
 This POC deliberately has no controller authentication. Anyone on the same network who knows the controller address can operate it. Authentication is required before deployment on a shared or untrusted network.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and extension guidance.
+
+## OpenAI-hosted MVP
+
+The `hosted/` directory contains the internet-accessible OpenAI Sites edition. It keeps the public board read-only, protects controller actions with a server-side access key, and stores live session state in managed D1 storage.
+
+For local development and deployment details, see [hosted/README.md](hosted/README.md).
