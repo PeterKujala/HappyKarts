@@ -45,7 +45,7 @@ test('base path routes the hosted API and rejects the unprefixed API', async () 
 });
 
 test('browser files use document-relative URLs', () => {
-  const files = ['public/board.html', 'public/control.html', 'public/index.html', 'public/board.js', 'public/control.js', 'public/js/api.js'];
+  const files = ['public/board.html', 'public/control.html', 'public/help.html', 'public/admin.html', 'public/index.html', 'public/board.js', 'public/control.js', 'public/admin.js', 'public/js/api.js'];
   for (const file of files) {
     const text = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
     assert.doesNotMatch(text, /(?:src|href)=["']\//, file);

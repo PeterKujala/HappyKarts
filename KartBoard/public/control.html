@@ -1,36 +1,167 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KartBoard — Controller</title><link rel="stylesheet" href="styles.css"></head>
-<body class="control-shell"><div class="control-wrap">
-  <header class="control-top"><div><div class="brand"><span class="brand-mark">↗</span>KartBoard</div><div class="eyebrow" style="margin-top:5px">Practice controller</div><div class="eyebrow" id="actor"></div></div><div class="control-top-actions"><button class="button ghost" id="logout" hidden>Sign out</button><button class="button ghost" id="openBoard">↗ <span>Open public board</span></button><button class="button" id="edit">⚙ <span>Day setup</span></button></div></header>
-  <div id="conflict" class="conflict-banner" hidden><p>Another controller changed KartBoard, so this change was not saved. The board has been refreshed.</p><button type="button" class="button lime" id="refreshBoard">Refresh</button></div>
-  <main class="dashboard">
-    <section>
-      <div class="card session-card">
-        <div class="session-meta"><span class="eyebrow session-status" id="status">Ready to begin</span><span class="pill" id="venue">Ipswich Kart Club</span></div>
-        <div class="session-title" id="current">Cadet P</div>
-        <div class="control-clock" id="timer">09:00</div><div class="clock-caption">Approximate session time remaining</div>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KartBoard — Controller</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="control-shell">
+  <div class="learn-bar">
+    <a class="button ghost" id="instructions" href="help.html" data-help="instructions">Instructions</a>
+    <button type="button" class="button show-me-toggle" id="showMeToggle" aria-pressed="false" data-help="show-me">Show me</button>
+  </div>
+  <div id="showMeBanner" class="show-me-banner" hidden role="status">Show me is on. Nothing you tap will change the day.</div>
+  <div class="control-wrap">
+    <header class="control-top">
+      <div>
+        <div class="brand"><span class="brand-mark">↗</span>KartBoard</div>
+        <div class="eyebrow" style="margin-top:5px">Practice controller</div>
+        <div class="eyebrow" id="actor" aria-live="polite"></div>
       </div>
-      <button class="main-action" id="mainAction"><span id="mainActionLabel">Start first session</span> <span>→</span></button>
+      <div class="control-top-actions">
+        <button class="button ghost" id="logout" hidden data-help="logout">Sign out</button>
+        <button class="button ghost" id="openBoard" data-help="open-board">↗ <span>Open public board</span></button>
+        <button class="button" id="edit" data-help="day-setup">⚙ <span>Day setup</span></button>
+      </div>
+    </header>
+    <div id="conflict" class="conflict-banner" hidden>
+      <p>Another controller changed KartBoard, so this change was not saved. The board has been refreshed.</p>
+      <button type="button" class="button lime" id="refreshBoard" data-help="refresh-conflict">Refresh</button>
+    </div>
+    <main class="dashboard">
+      <section>
+        <div class="card session-card">
+          <div class="session-meta"><span class="eyebrow session-status" id="status">Ready to begin</span><span class="pill" id="venue">Ipswich Kart Club</span></div>
+          <div class="session-title" id="current">Cadet P</div>
+          <div class="control-clock" id="timer">09:00</div>
+          <div class="clock-caption">Approximate session time remaining</div>
+        </div>
+        <button class="main-action" id="mainAction" data-help="main-action"><span id="mainActionLabel">Start first session</span> <span>→</span></button>
+      </section>
+      <aside class="side-stack">
+        <section class="card side-card">
+          <div class="card-head"><h2>Coming up</h2><span class="eyebrow">Rotation</span></div>
+          <div class="next-name" id="next">Cadet</div>
+          <div class="then-name">Then <strong id="then">Junior P</strong></div>
+        </section>
+        <section class="card side-card">
+          <div class="card-head"><h2>Quick controls</h2></div>
+          <div class="quick-grid">
+            <button class="button" id="pause" data-help="pause">Pause</button>
+            <button class="button" data-action="addMinute" data-help="add-minute">+ 1 minute</button>
+            <button class="button" data-action="advanceMinute" data-help="advance-minute">Advance by 1 minute</button>
+            <button class="button" data-action="changeover" data-help="changeover">Changeover</button>
+            <button class="button" data-action="previous" data-help="previous">Previous class</button>
+            <button class="button" data-action="break" data-help="break">Take a break</button>
+            <button class="button warn" data-action="finish" data-help="finish">Finish day</button>
+          </div>
+        </section>
+        <section class="card side-card">
+          <div class="card-head"><h2>Paddock notice</h2></div>
+          <form class="notice-form" id="noticeForm">
+            <input id="noticeInput" data-help="notice" placeholder="e.g. Lunch at 12:30">
+            <button class="button primary" data-help="post-notice">Post</button>
+          </form>
+        </section>
+      </aside>
+    </main>
+    <section class="card rotation-card" id="rotationCard">
+      <div class="card-head">
+        <div><h2 id="rotationTitle">Today's running order</h2><span class="eyebrow" id="dayLabel">Saturday Practice</span></div>
+        <div class="rotation-actions">
+          <span class="edit-hint" id="editHint">Hold a class to change</span>
+          <button class="button" id="cancelRotation" hidden data-help="cancel-rotation">Cancel</button>
+          <button class="button primary" id="saveRotation" hidden data-help="save-rotation">Done</button>
+        </div>
+      </div>
+      <div class="rotation" id="rotation"></div>
+      <div class="inline-add" id="inlineAdd" hidden>
+        <div class="section-label"><span>Add another class</span></div>
+        <div class="class-chips" id="inlineClassChips"></div>
+        <div class="custom-add">
+          <input id="inlineCustomClass" data-help="custom-class" placeholder="Custom class name">
+          <button type="button" class="button" id="inlineAddCustom" data-help="add-custom">Add</button>
+        </div>
+      </div>
+      <p class="rotation-help" id="rotationHelp" hidden>Drag tiles into order. Changes will not interrupt the current session.</p>
     </section>
-    <aside class="side-stack">
-      <section class="card side-card"><div class="card-head"><h2>Coming up</h2><span class="eyebrow">Rotation</span></div><div class="next-name" id="next">Cadet</div><div class="then-name">Then <strong id="then">Junior P</strong></div></section>
-      <section class="card side-card"><div class="card-head"><h2>Quick controls</h2></div><div class="quick-grid"><button class="button" id="pause">Pause</button><button class="button" data-action="addMinute">+ 1 minute</button><button class="button" data-action="changeover">Changeover</button><button class="button" data-action="previous">Previous class</button><button class="button" data-action="break">Take a break</button><button class="button warn" data-action="finish">Finish day</button></div></section>
-      <section class="card side-card"><div class="card-head"><h2>Paddock notice</h2></div><form class="notice-form" id="noticeForm"><input id="noticeInput" placeholder="e.g. Lunch at 12:30"><button class="button primary">Post</button></form></section>
-    </aside>
-  </main>
-  <section class="card rotation-card" id="rotationCard"><div class="card-head"><div><h2 id="rotationTitle">Today's running order</h2><span class="eyebrow" id="dayLabel">Saturday Practice</span></div><div class="rotation-actions"><span class="edit-hint" id="editHint">Hold a class to change</span><button class="button" id="cancelRotation" hidden>Cancel</button><button class="button primary" id="saveRotation" hidden>Done</button></div></div><div class="rotation" id="rotation"></div><div class="inline-add" id="inlineAdd" hidden><div class="section-label"><span>Add another class</span></div><div class="class-chips" id="inlineClassChips"></div><div class="custom-add"><input id="inlineCustomClass" placeholder="Custom class name"><button type="button" class="button" id="inlineAddCustom">Add</button></div></div><p class="rotation-help" id="rotationHelp" hidden>Drag tiles into order. Changes will not interrupt the current session.</p></section>
-</div>
-<dialog id="setup" class="setup-dialog"><form class="dialog-inner" id="setupForm"><div class="dialog-head"><div><div class="eyebrow">Before practice</div><h2>Set up today’s rotation</h2><p>Press and drag any class tile into a new position.</p></div><button type="button" class="close" id="closeSetup" aria-label="Close setup">×</button></div>
-  <div class="setup-layout"><section>
-    <div class="section-label"><span>Running order</span><span id="classCount">0 classes</span></div>
-    <div class="setup-rotation" id="setupRotation"></div>
-    <div class="add-panel"><div class="section-label"><span>Add a class</span></div><div class="class-chips" id="classChips"></div><div class="custom-add"><input id="customClass" placeholder="Custom class name"><button type="button" class="button" id="addCustom">Add</button></div></div>
-  </section><aside class="setup-details">
-    <div class="field"><label for="setupVenue">Venue</label><input id="setupVenue" required></div><div class="field"><label for="setupDay">Practice label</label><input id="setupDay" required></div><div class="field"><label for="setupMinutes">Usual session length</label><div class="minutes-input"><input id="setupMinutes" type="number" min="1" max="30" required><span>minutes</span></div></div>
-    <div class="setup-preview"><div class="eyebrow">Public board preview</div><strong id="previewCurrent">Cadet P</strong><span>Up next: <b id="previewNext">Cadet</b></span></div>
-  </aside></div>
-  <div class="dialog-actions setup-actions"><button type="button" class="button" id="cancelSetup">Cancel</button><button class="button primary" id="saveSetup">Save running order</button></div></form></dialog>
-<dialog id="editClass"><form class="dialog-inner compact-dialog" id="editClassForm"><div class="dialog-head"><div><div class="eyebrow">Edit class</div><h2>Class name</h2></div><button type="button" class="close" id="closeEditClass">×</button></div><div class="field"><label for="editClassName">Name shown to everyone</label><input id="editClassName" required maxlength="40"></div><div class="dialog-actions"><button type="button" class="button" id="cancelEditClass">Cancel</button><button class="button primary">Save</button></div></form></dialog>
-<div class="toast" id="toast">Updated</div>
-<div id="pinGate" class="pin-gate"><form class="pin-card" id="pinForm"><div class="brand"><span class="brand-mark">↗</span>KartBoard</div><div class="eyebrow">Controller</div><h2>Who’s controlling?</h2><p class="pin-help">Pick your name and enter your PIN. This device stays signed in.</p><div class="pin-names" id="pinNames"></div><div class="pin-dots" id="pinDots" aria-live="polite">Enter PIN</div><div class="pin-pad" id="pinPad"></div><p class="pin-error" id="pinError" role="alert"></p><button class="button lime pin-submit" type="submit">Unlock</button></form></div>
-<script type="module" src="control.js"></script></body></html>
+  </div>
+  <dialog id="setup" class="setup-dialog">
+    <form class="dialog-inner" id="setupForm">
+      <div class="dialog-head">
+        <div>
+          <div class="eyebrow">Before practice</div>
+          <h2>Set up today’s rotation</h2>
+          <p>Press and drag any class tile into a new position.</p>
+        </div>
+        <button type="button" class="close" id="closeSetup" aria-label="Close setup" data-help="close-setup">×</button>
+      </div>
+      <div class="setup-layout">
+        <section>
+          <div class="section-label"><span>Running order</span><span id="classCount">0 classes</span></div>
+          <div class="setup-rotation" id="setupRotation"></div>
+          <div class="add-panel">
+            <div class="section-label"><span>Add a class</span></div>
+            <div class="class-chips" id="classChips"></div>
+            <div class="custom-add">
+              <input id="customClass" data-help="custom-class" placeholder="Custom class name">
+              <button type="button" class="button" id="addCustom" data-help="add-custom">Add</button>
+            </div>
+          </div>
+        </section>
+        <aside class="setup-details">
+          <div class="field"><label for="setupVenue">Venue</label><input id="setupVenue" data-help="setup-venue" required></div>
+          <div class="field"><label for="setupDay">Practice label</label><input id="setupDay" data-help="setup-day" required></div>
+          <div class="field"><label for="setupMinutes">Usual session length</label><div class="minutes-input"><input id="setupMinutes" data-help="setup-minutes" type="number" min="1" max="30" required><span>minutes</span></div></div>
+          <div class="setup-preview"><div class="eyebrow">Public board preview</div><strong id="previewCurrent">Cadet P</strong><span>Up next: <b id="previewNext">Cadet</b></span></div>
+        </aside>
+      </div>
+      <div class="dialog-actions setup-actions">
+        <button type="button" class="button" id="cancelSetup" data-help="cancel-setup">Cancel</button>
+        <button class="button primary" id="saveSetup" data-help="save-setup">Save running order</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="editClass">
+    <form class="dialog-inner compact-dialog" id="editClassForm">
+      <div class="dialog-head">
+        <div><div class="eyebrow">Edit class</div><h2>Class name</h2></div>
+        <button type="button" class="close" id="closeEditClass" data-help="close-edit-class">×</button>
+      </div>
+      <div class="field"><label for="editClassName">Name shown to everyone</label><input id="editClassName" data-help="edit-class-name" required maxlength="40"></div>
+      <div class="dialog-actions">
+        <button type="button" class="button" id="cancelEditClass" data-help="cancel-edit-class">Cancel</button>
+        <button class="button primary" data-help="save-edit-class">Save</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="showMeDialog" class="show-me-dialog" aria-labelledby="showMeTitle">
+    <div class="show-me-dialog-body">
+      <p class="eyebrow">Show me</p>
+      <h2 id="showMeTitle"></h2>
+      <h3>What happens</h3>
+      <p id="showMeHappens"></p>
+      <h3>When to use it</h3>
+      <p id="showMeWhen"></p>
+      <h3>Good to know</h3>
+      <p id="showMeCaveat"></p>
+      <button type="button" class="button primary" id="showMeClose" data-help="close-help">Close</button>
+    </div>
+  </dialog>
+  <div class="toast" id="toast">Updated</div>
+  <div id="pinGate" class="pin-gate">
+    <form class="pin-card" id="pinForm" data-help="access-code">
+      <div class="brand"><span class="brand-mark">↗</span>KartBoard</div>
+      <div class="eyebrow">Controller</div>
+      <h2>Enter your access code</h2>
+      <p class="pin-help">Use the code you were given. Letters and digits are both fine. This device stays signed in.</p>
+      <label class="pin-code-label" for="accessCode">Access code</label>
+      <input id="accessCode" class="pin-code" name="code" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="32" data-help="access-code" placeholder="letters and digits">
+      <p class="pin-error" id="pinError" role="alert"></p>
+      <button class="button lime pin-submit" type="submit" data-help="unlock">Unlock</button>
+    </form>
+  </div>
+  <script type="module" src="control.js"></script>
+</body>
+</html>

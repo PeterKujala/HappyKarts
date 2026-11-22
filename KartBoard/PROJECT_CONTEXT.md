@@ -216,6 +216,10 @@ The public board uses oversized current-class and timer typography, with next an
 - **IMPLEMENTED:** the previous `Done` action bug, which surfaced as an `Unknown action` message, has been corrected by sending the supported `updateRotation` action.
 - **IMPLEMENTED:** the stale visible running-order issue after saving has been corrected; accepted server state is rendered back into the dashboard.
 
+## Hosted release 0.4.0
+
+**IMPLEMENTED:** Admin-managed access codes, code-only controller sign-in, Show me, instructions at `help.html`, and Advance by 1 minute. Admin is `/auth/apps/kartboard-admin/*` and verifies the Cloudflare Access JWT. The public prefix stays bypassed only when the bypass path does not also match `kartboard-admin`. See `docs/ACCESS.md`. Do not deploy from the 0.4.0 change.
+
 ## Hosted release 0.3.0
 
 **IMPLEMENTED:** KartBoard is prepared for `https://designacle.au/auth/apps/kartboard/board.html` (public, no login) and `https://designacle.au/auth/apps/kartboard/control.html` (PIN). Cloudflare Access on `/auth/apps/*` would block the public board, so Peter must add a more specific Bypass/Everyone application for `auth/apps/kartboard*` before or as the Worker is deployed. The Worker does not verify an Access JWT.

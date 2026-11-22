@@ -1,19 +1,28 @@
 const { DomainError } = require('../domain/errors');
 const { SCHEMA_VERSION } = require('../domain/state');
 const { ACTION_NAMES, reduceState } = require('../domain/reducer');
-const { locate } = require('./paths');
+const { classify, adminRoute } = require('./surface');
 const { assertMutatingRequest } = require('../auth/origin');
 const { readCookie, verifySession, signSession, sessionCookie, clearSessionCookie } = require('../auth/session');
-const { PIN_PATTERN } = require('../auth/users');
+const { codeAttemptKey } = require('../auth/codes');
+const { authorizeHostedAdmin, authorizeLocalAdmin } = require('../auth/access');
 const { API_VERSION, SESSION_COOKIE, SESSION_TTL_MS, MAX_BODY_BYTES, SECURITY_HEADERS } = require('./constants');
 
 async function handleKartBoardRequest(request, ctx) {
   try {
     const url = new URL(request.url);
-    const located = locate(url.pathname, ctx.basePath || '');
-    if (located.error === 'outside') return text('Not found', 404);
-    if (located.error) return json({ error: { code: 'NOT_FOUND', message: 'File not found.' } }, 404);
-    const route = routeOf(located.path);
+    const kind = classify(url.pathname, {
+      basePath: ctx.basePath || '',
+      adminBasePath: ctx.adminBasePath === undefined ? (ctx.basePath || '') : ctx.adminBasePath
+    });
+    if (kind.area === 'missing') {
+      if (kind.error === 'outside') return text('Not found', 404);
+      return json({ error: { code: 'NOT_FOUND', message: 'File not found.' } }, 404);
+    }
+    if (kind.area === 'admin-redirect') return redirect(kind.redirect);
+    if (kind.area === 'admin') return await serveAdminAsset(request, ctx, kind);
+    if (kind.area === 'admin-api') return await adminApi(request, ctx, kind.path);
+    const route = routeOf(kind.path);
     if (route.kind === 'meta') return await allowRead(request, () => json({ apiVersion: API_VERSION, schemaVersion: SCHEMA_VERSION, actions: ACTION_NAMES }));
     if (route.kind === 'state') return await allowRead(request, async () => json(await ctx.board.read()));
     if (route.kind === 'events') return await allowRead(request, () => subscribe(request, ctx));
@@ -22,8 +31,8 @@ async function handleKartBoardRequest(request, ctx) {
     if (route.kind === 'logout') return await postOnly(request, () => logout(request, ctx));
     if (route.kind === 'action') return await postOnly(request, () => action(request, ctx));
     if (route.kind === 'api-missing') return json({ error: { code: 'NOT_FOUND', message: 'API endpoint not found.' } }, 404);
-    if (located.path === '/') return redirect(`${ctx.basePath || ''}/control.html`);
-    return serveAsset(request, located.path, ctx);
+    if (kind.path === '/') return redirect(`${ctx.basePath || ''}/control.html`);
+    return serveAsset(request, kind.path, ctx);
   } catch (error) {
     return fail(error, ctx);
   }
@@ -64,25 +73,31 @@ async function subscribe(request, ctx) {
 
 async function sessionStatus(request, ctx) {
   const actor = await readActor(request, ctx);
-  return json({ authenticated: Boolean(actor), user: actor, users: ctx.users.names });
+  return json({ authenticated: Boolean(actor), user: actor || '', users: await ctx.codes.names() });
 }
 
 async function login(request, ctx) {
   assertMutatingRequest(request);
   if (!ctx.sessionSecret) throw new DomainError('NOT_CONFIGURED', 'KartBoard has no session secret yet.', 503);
-  if (!ctx.users.configured) throw new DomainError('NOT_CONFIGURED', 'No controller PINs are registered yet.', 503);
+  if (!(await ctx.codes.configured())) throw new DomainError('NOT_CONFIGURED', 'No controller codes are registered yet.', 503);
   const body = await readJson(request);
   const name = typeof body.name === 'string' ? body.name.trim() : '';
-  const pin = typeof body.pin === 'string' ? body.pin : '';
+  const rawCode = typeof body.code === 'string' && body.code ? body.code : (typeof body.pin === 'string' ? body.pin : '');
   const ip = clientIp(request, ctx);
-  const gate = ctx.rateLimit.attempt({ ip, user: name || 'unknown' });
+  const attemptUser = await codeAttemptKey(name, rawCode);
+  const gate = ctx.rateLimit.attempt({ ip, user: attemptUser });
   if (!gate.ok) return rateLimited(gate.retryAfterMs);
-  if (!name || !PIN_PATTERN.test(pin)) throw new DomainError('INVALID_PIN', 'That name or PIN was not recognised.', 401);
-  const user = await ctx.users.authenticate(name, pin);
-  if (!user) throw new DomainError('INVALID_PIN', 'That name or PIN was not recognised.', 401);
-  ctx.rateLimit.succeed({ ip, user });
-  const token = await signSession({ u: user, exp: ctx.now() + SESSION_TTL_MS }, ctx.sessionSecret);
-  return json({ ok: true, user }, 200, { 'Set-Cookie': sessionCookie(token, cookieOptions(request, ctx)) });
+  const credential = await ctx.codes.authenticate({ name, code: rawCode });
+  if (!credential) throw new DomainError('INVALID_CODE', 'That code was not recognised.', 401);
+  ctx.rateLimit.succeed({ ip, user: attemptUser });
+  await ctx.codes.markUsed(credential.id, ctx.now());
+  const token = await signSession({
+    u: credential.name,
+    id: credential.id,
+    v: credential.version,
+    exp: ctx.now() + SESSION_TTL_MS
+  }, ctx.sessionSecret);
+  return json({ ok: true, user: credential.name }, 200, { 'Set-Cookie': sessionCookie(token, cookieOptions(request, ctx)) });
 }
 
 function logout(request, ctx) {
@@ -109,6 +124,37 @@ async function action(request, ctx) {
   return json(view);
 }
 
+async function adminApi(request, ctx, pathname) {
+  const route = adminRoute(pathname, request.method);
+  if (!route.known) return json({ error: { code: 'NOT_FOUND', message: 'API endpoint not found.' } }, 404);
+  if (!route.action) return methodNotAllowed(Object.keys(route.allowed || { POST: true }).join(', ') || 'POST');
+  const auth = await authorizeAdmin(request, ctx);
+  if (!auth.ok) throw new DomainError(auth.code, auth.message, auth.status);
+  if (route.action === 'list') return json({ codes: await ctx.codes.listPublic() });
+  assertMutatingRequest(request);
+  const body = await readJson(request);
+  const now = ctx.now();
+  if (route.action === 'create') return json(await ctx.codes.create(body.name, now), 201);
+  if (route.action === 'revoke') return json(await ctx.codes.revoke(body.name));
+  if (route.action === 'regenerate') return json(await ctx.codes.regenerate(body.name, now));
+  return json({ error: { code: 'NOT_FOUND', message: 'API endpoint not found.' } }, 404);
+}
+
+async function serveAdminAsset(request, ctx, kind) {
+  if (kind.redirect) return redirect(kind.redirect);
+  if (!['GET', 'HEAD'].includes(request.method)) return methodNotAllowed('GET, HEAD');
+  if ((ctx.adminMode || 'local') === 'access') {
+    const auth = await authorizeHostedAdmin(request, ctx.adminEnv || {}, ctx.adminDeps || {});
+    if (!auth.ok) throw new DomainError(auth.code, auth.message, auth.status);
+  }
+  return serveAsset(request, kind.path, ctx);
+}
+
+function authorizeAdmin(request, ctx) {
+  if ((ctx.adminMode || 'local') === 'access') return authorizeHostedAdmin(request, ctx.adminEnv || {}, ctx.adminDeps || {});
+  return authorizeLocalAdmin(request, ctx);
+}
+
 function serveAsset(request, pathname, ctx) {
   if (!['GET', 'HEAD'].includes(request.method)) return methodNotAllowed('GET, HEAD');
   const asset = ctx.asset(pathname);
@@ -121,8 +167,8 @@ async function readActor(request, ctx) {
   if (!ctx.sessionSecret) return null;
   const token = readCookie(request.headers.get('cookie'));
   const payload = await verifySession(token, ctx.sessionSecret, ctx.now());
-  if (!payload || !ctx.users.has(payload.u)) return null;
-  return payload.u;
+  if (!payload) return null;
+  return ctx.codes.resolveSession(payload);
 }
 
 function cookieOptions(request, ctx) {
@@ -136,10 +182,10 @@ function clientIp(request, ctx) {
 async function readJson(request) {
   const declared = Number(request.headers.get('content-length') || 0);
   if (declared > MAX_BODY_BYTES) throw new DomainError('REQUEST_TOO_LARGE', 'Request body is too large.', 413);
-  const text = await request.text();
-  if (new TextEncoder().encode(text).length > MAX_BODY_BYTES) throw new DomainError('REQUEST_TOO_LARGE', 'Request body is too large.', 413);
-  if (!text) return {};
-  try { return JSON.parse(text); }
+  const textBody = await request.text();
+  if (new TextEncoder().encode(textBody).length > MAX_BODY_BYTES) throw new DomainError('REQUEST_TOO_LARGE', 'Request body is too large.', 413);
+  if (!textBody) return {};
+  try { return JSON.parse(textBody); }
   catch { throw new DomainError('INVALID_JSON', 'Request body must be valid JSON.'); }
 }
 

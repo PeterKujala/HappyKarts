@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const { loadConfig } = require('./src/config');
 const { createKartBoardServer } = require('./src/http/create-server');
 const { UserRegistry } = require('./src/auth/users');
-const { CONTROLLER_URL, PUBLIC_BOARD_URL } = require('./src/http/constants');
+const { CONTROLLER_URL, PUBLIC_BOARD_URL, ADMIN_URL } = require('./src/http/constants');
 
 function startKartBoard() {
   const config = loadConfig();
@@ -16,9 +16,12 @@ function startKartBoard() {
     console.log(`KartBoard is running at ${local}`);
     console.log(`Control: ${local}/control.html`);
     console.log(`Board:   ${local}/board.html`);
+    console.log(`Help:    ${local}/help.html`);
+    console.log(`Admin:   ${local}/admin.html`);
     console.log(`Hosted board:      ${PUBLIC_BOARD_URL}`);
     console.log(`Hosted controller: ${CONTROLLER_URL}`);
-    if (!users.configured) console.log('No controller PINs yet. Run: node scripts/manage-users.mjs add');
+    console.log(`Hosted admin:      ${ADMIN_URL}`);
+    if (!users.configured) console.log('No seed codes in the user file. Create controller codes on the admin page, or run: node scripts/manage-users.mjs add');
     if (config.host === '0.0.0.0') console.log('Other devices on this network can connect using this computer\'s local IP address.');
   });
   return app;

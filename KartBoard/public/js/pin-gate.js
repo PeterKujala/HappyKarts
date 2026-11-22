@@ -1,59 +1,40 @@
-import { button } from './dom.js';
+export function createCodeGate(root, { onSubmit }) {
+  const input = /** @type {HTMLInputElement} */ (root.querySelector('#accessCode'));
+  const error = /** @type {HTMLElement} */ (root.querySelector('#pinError'));
+  const form = /** @type {HTMLFormElement} */ (root.querySelector('#pinForm'));
 
-export function createPinGate(root, { onSubmit }) {
-  const names = root.querySelector('#pinNames');
-  const dots = root.querySelector('#pinDots');
-  const pad = root.querySelector('#pinPad');
-  const error = root.querySelector('#pinError');
-  const form = root.querySelector('#pinForm');
-  let selected = '';
-  let pin = '';
-
-  pad.replaceChildren(...['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'back'].map(key => {
-    const keyButton = button({ text: key === 'clear' ? 'Clear' : key === 'back' ? '⌫' : key, className: 'button', label: key === 'back' ? 'Delete digit' : key === 'clear' ? 'Clear PIN' : key });
-    keyButton.addEventListener('click', () => {
-      if (key === 'clear') pin = '';
-      else if (key === 'back') pin = pin.slice(0, -1);
-      else if (pin.length < 8) pin += key;
-      renderPin();
-    });
-    return keyButton;
-  }));
+  input.addEventListener('input', () => {
+    const cleaned = input.value.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 32);
+    if (cleaned !== input.value) input.value = cleaned;
+  });
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
     error.textContent = '';
-    if (!selected) { error.textContent = 'Choose your name.'; return; }
-    const failed = await onSubmit(selected, pin);
+    const code = input.value.trim().toLowerCase();
+    if (!/^[a-z0-9]{4,32}$/.test(code)) {
+      error.textContent = 'Enter the access code you were given.';
+      input.focus();
+      return;
+    }
+    const failed = await onSubmit(code);
     if (failed) {
-      pin = '';
-      renderPin();
+      input.value = '';
       error.textContent = failed;
+      input.focus();
     }
   });
 
-  function renderPin() { dots.textContent = pin ? '•'.repeat(pin.length) : 'Enter PIN'; }
-
   return {
-    open(users) {
+    open() {
       root.hidden = false;
       document.querySelector('.control-wrap')?.setAttribute('inert', '');
-      names.replaceChildren(...users.map(name => {
-        const choice = button({ text: name, className: 'button' });
-        choice.type = 'button';
-        choice.addEventListener('click', () => {
-          selected = name;
-          for (const item of names.querySelectorAll('button')) item.setAttribute('aria-pressed', String(item === choice));
-        });
-        return choice;
-      }));
-      if (users.length === 1) names.querySelector('button')?.click();
-      if (!users.length) error.textContent = 'No controller PINs yet. On the KartBoard computer run: node scripts/manage-users.mjs add';
-      renderPin();
+      error.textContent = '';
+      input.focus();
     },
     close() {
       root.hidden = true;
-      pin = '';
+      input.value = '';
       document.querySelector('.control-wrap')?.removeAttribute('inert');
     }
   };

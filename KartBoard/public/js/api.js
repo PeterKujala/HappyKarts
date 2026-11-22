@@ -11,10 +11,13 @@ export class ApiError extends Error {
 }
 
 export class KartBoardApi {
+  /** @param {typeof fetch} [fetchImpl] */
+  constructor(fetchImpl) { this.fetch = fetchImpl || ((url, options) => fetch(url, options)); }
+
   session() { return this.#json('api/session'); }
 
-  login(name, pin) {
-    return this.#json('api/login', { method: 'POST', headers: CONTROLLER_HEADERS, body: JSON.stringify({ name, pin }) });
+  login(code) {
+    return this.#json('api/login', { method: 'POST', headers: CONTROLLER_HEADERS, body: JSON.stringify({ code }) });
   }
 
   logout() {
@@ -54,7 +57,7 @@ export class KartBoardApi {
 
   async #json(url, options) {
     let response;
-    try { response = await fetch(new URL(url, window.location.href), { cache: 'no-store', credentials: 'same-origin', ...options }); }
+    try { response = await this.fetch(new URL(url, window.location.href), { cache: 'no-store', credentials: 'same-origin', ...options }); }
     catch { throw new ApiError('NETWORK_ERROR', 'Cannot reach KartBoard. Check the connection and try again.'); }
     let body;
     try { body = await response.json(); }

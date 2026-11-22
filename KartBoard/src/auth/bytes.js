@@ -27,4 +27,16 @@ function timingSafeEqual(left, right) {
   return difference === 0;
 }
 
-module.exports = { bytesToBase64, base64ToBytes, bytesToBase64Url, base64UrlToBytes, timingSafeEqual };
+function timingSafeEqualText(left, right) {
+  const encoder = new TextEncoder();
+  const a = encoder.encode(String(left));
+  const b = encoder.encode(String(right));
+  const length = Math.max(a.length, b.length, 1);
+  const leftBytes = new Uint8Array(length);
+  const rightBytes = new Uint8Array(length);
+  leftBytes.set(a.subarray(0, length));
+  rightBytes.set(b.subarray(0, length));
+  return a.length === b.length && timingSafeEqual(leftBytes, rightBytes);
+}
+
+module.exports = { bytesToBase64, base64ToBytes, bytesToBase64Url, base64UrlToBytes, timingSafeEqual, timingSafeEqualText };

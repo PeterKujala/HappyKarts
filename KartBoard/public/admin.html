@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KartBoard — Access codes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="control-shell">
+  <main class="control-wrap admin-wrap">
+    <div class="brand"><span class="brand-mark">↗</span>KartBoard</div>
+    <p class="eyebrow" style="margin-top:8px">Controller access codes</p>
+    <h1>Access codes</h1>
+    <p>Name a controller and KartBoard makes a code. The code is shown once. After that you only see the name, when it was created, and when it was last used.</p>
+    <section class="card admin-card">
+      <h2>New code</h2>
+      <form class="admin-form" id="createForm">
+        <input id="codeName" name="name" maxlength="40" autocomplete="off" placeholder="Controller name" required>
+        <button class="button lime" type="submit">Generate code</button>
+      </form>
+      <div id="reveal" hidden>
+        <p id="revealLabel">Give this code to the controller. KartBoard will not show it again.</p>
+        <div class="code-row">
+          <input id="revealCode" class="reveal-code" readonly>
+          <button type="button" class="button primary" id="copyCode">Copy</button>
+        </div>
+        <p id="copyState" class="seed-note" role="status"></p>
+        <button type="button" class="button" id="hideCode">Done</button>
+      </div>
+      <p id="adminError" class="pin-error" role="alert"></p>
+    </section>
+    <section class="card admin-card">
+      <h2>Codes</h2>
+      <div id="codeList"></div>
+    </section>
+    <section class="card admin-card">
+      <h2>This computer</h2>
+      <p class="seed-note">On the club server, Cloudflare Access signs you in. For a local KartBoard, leave this blank on this computer, or paste the local admin token.</p>
+      <div class="token-row code-row">
+        <input id="adminToken" type="password" autocomplete="off" placeholder="Local admin token">
+        <button type="button" class="button" id="saveToken">Save token</button>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

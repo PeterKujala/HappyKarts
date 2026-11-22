@@ -12,9 +12,11 @@ function loadConfig(env = process.env) {
     pidFile: env.KARTBOARD_PID_FILE || path.join(ROOT_DIR, 'kartboard.pid'),
     basePath: normalizeBase(env.KARTBOARD_BASE_PATH || ''),
     usersFile: env.KARTBOARD_USERS_FILE || path.join(ROOT_DIR, 'kartboard-users.json'),
+    accessCodesFile: env.KARTBOARD_ACCESS_CODES_FILE || path.join(ROOT_DIR, 'kartboard-access-codes.json'),
     sessionSecretFile: env.KARTBOARD_SESSION_SECRET_FILE || path.join(ROOT_DIR, 'kartboard-session.secret'),
     usersJson: env.KARTBOARD_USERS || '',
-    sessionSecret: env.KARTBOARD_SESSION_SECRET || ''
+    sessionSecret: env.KARTBOARD_SESSION_SECRET || '',
+    adminToken: env.KARTBOARD_ADMIN_TOKEN || ''
   });
 }
 
