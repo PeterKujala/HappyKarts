@@ -16,6 +16,7 @@ function loadConfig(env = process.env) {
     sessionSecretFile: env.KARTBOARD_SESSION_SECRET_FILE || path.join(ROOT_DIR, 'kartboard-session.secret'),
     usersJson: env.KARTBOARD_USERS || '',
     sessionSecret: env.KARTBOARD_SESSION_SECRET || '',
+    codeKey: env.KARTBOARD_CODE_KEY || '',
     adminToken: env.KARTBOARD_ADMIN_TOKEN || ''
   });
 }

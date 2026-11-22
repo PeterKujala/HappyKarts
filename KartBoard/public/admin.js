@@ -59,11 +59,11 @@ async function load() {
   }
   const table = document.createElement('table');
   table.className = 'code-table';
-  table.innerHTML = '<thead><tr><th>Name</th><th>Created</th><th>Last used</th><th></th></tr></thead>';
+  table.innerHTML = '<thead><tr><th>Name</th><th>Code</th><th>Created</th><th>Last used</th><th></th></tr></thead>';
   const tbody = document.createElement('tbody');
   for (const code of body.codes) {
     const row = document.createElement('tr');
-    row.append(cell(code.name), cell(when(code.createdAt)), cell(when(code.lastUsedAt)));
+    row.append(cell(code.name), codeCell(code.code), cell(when(code.createdAt)), cell(when(code.lastUsedAt)));
     const actions = document.createElement('td');
     actions.className = 'code-actions';
     if (code.source === 'managed') {
@@ -97,7 +97,7 @@ async function revoke(name) {
 
 function showCode(name, code, label) {
   reveal.hidden = false;
-  revealLabel.textContent = `${label} for ${name}. Give it to them now. KartBoard will not show it again.`;
+  revealLabel.textContent = `${label} for ${name}. It stays in the list below.`;
   revealCode.value = code;
   copyState.textContent = '';
   revealCode.focus();
@@ -131,6 +131,52 @@ async function send(path, options = {}) {
 function cell(text) {
   const item = document.createElement('td');
   item.textContent = text;
+  return item;
+}
+
+function codeCell(code) {
+  const item = document.createElement('td');
+  if (!code) {
+    item.className = 'seed-note';
+    item.textContent = 'Hidden — regenerate to view';
+    return item;
+  }
+  const row = document.createElement('div');
+  row.className = 'code-row';
+  const input = document.createElement('input');
+  input.className = 'reveal-code';
+  input.readOnly = true;
+  input.type = 'text';
+  input.value = code;
+  input.setAttribute('aria-label', 'Access code');
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'button';
+  toggle.textContent = 'Hide';
+  toggle.setAttribute('aria-pressed', 'false');
+  toggle.addEventListener('click', () => {
+    const hide = input.type === 'text';
+    input.type = hide ? 'password' : 'text';
+    toggle.textContent = hide ? 'Show' : 'Hide';
+    toggle.setAttribute('aria-pressed', String(hide));
+  });
+  const copy = document.createElement('button');
+  copy.type = 'button';
+  copy.className = 'button';
+  copy.textContent = 'Copy';
+  copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      copy.textContent = 'Copied';
+    } catch {
+      input.type = 'text';
+      input.focus();
+      input.select();
+      copy.textContent = 'Select';
+    }
+  });
+  row.append(input, toggle, copy);
+  item.append(row);
   return item;
 }
 

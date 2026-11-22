@@ -1,5 +1,6 @@
 const { DomainError } = require('../domain/errors');
 const { assertName, hashSecret, verifySecret, DEFAULT_ITERATIONS } = require('./users');
+const { sealCode, openCode } = require('./code-seal');
 
 // 32 characters, so a random byte maps evenly (256 / 32). Dropped 0/o/1/l.
 const CODE_ALPHABET = 'abcdefghijkmnpqrstuvwxyz23456789';
@@ -66,12 +67,18 @@ function seedCredential(user) {
 
 class CredentialBook {
   /**
-   * @param {{ seeds: { users: Array<{ name: string, salt: string, hash: string, iterations: number }>, configured: boolean }, store: { load: () => Promise<object[]>, save: (records: object[]) => Promise<void> }, iterations?: number }} options
+   * @param {{ seeds: { users: Array<{ name: string, salt: string, hash: string, iterations: number }>, configured: boolean }, store: { load: () => Promise<object[]>, save: (records: object[]) => Promise<void> }, iterations?: number, codeKey?: string, sessionSecret?: string }} options
    */
-  constructor({ seeds, store, iterations = DEFAULT_ITERATIONS }) {
+  constructor({ seeds, store, iterations = DEFAULT_ITERATIONS, codeKey = '', sessionSecret = '' }) {
     this.seeds = seeds;
     this.store = store;
     this.iterations = iterations;
+    this.codeKey = codeKey || '';
+    this.sessionSecret = sessionSecret || '';
+  }
+
+  #material() {
+    return { codeKey: this.codeKey, sessionSecret: this.sessionSecret };
   }
 
   async merged() {
@@ -94,7 +101,12 @@ class CredentialBook {
   async listPublic() {
     const credentials = await this.merged();
     credentials.sort((left, right) => left.name.localeCompare(right.name));
-    return credentials.map(publicCode);
+    const rows = [];
+    for (const credential of credentials) {
+      const code = credential.source === 'managed' ? await openCode(credential, this.#material()) : null;
+      rows.push({ ...publicCode(credential), code });
+    }
+    return rows;
   }
 
   async create(name, now) {
@@ -105,6 +117,7 @@ class CredentialBook {
     }
     const code = generateAccessCode();
     const hashed = await hashAccessCode(code, { name: clean, iterations: this.iterations });
+    const sealed = await sealCode(code, this.#material());
     const record = {
       id: crypto.randomUUID(),
       name: clean,
@@ -113,7 +126,8 @@ class CredentialBook {
       iterations: hashed.iterations,
       version: 1,
       createdAt: now,
-      lastUsedAt: null
+      lastUsedAt: null,
+      ...sealed
     };
     records.push(record);
     await this.store.save(records);
@@ -136,12 +150,14 @@ class CredentialBook {
     if (index < 0) throw new DomainError('CODE_NOT_FOUND', 'No managed code uses that name.', 404);
     const code = generateAccessCode();
     const hashed = await hashAccessCode(code, { name: clean, iterations: this.iterations });
+    const sealed = await sealCode(code, this.#material());
     const next = {
       ...records[index],
       salt: hashed.salt,
       hash: hashed.hash,
       iterations: hashed.iterations,
-      version: records[index].version + 1
+      version: records[index].version + 1,
+      ...sealed
     };
     records[index] = next;
     await this.store.save(records);

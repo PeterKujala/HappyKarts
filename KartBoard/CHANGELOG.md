@@ -2,6 +2,12 @@
 
 Entries from 22 November 2026 onward match git history in the HappyKarts repository. Earlier entries were reconstructed before that import, so their exact edit order is not a git log.
 
+## 2026-11-22 — 0.4.2 admin list shows access codes
+
+- The admin list shows each code beside its name, with copy and a show/hide toggle. Codes stay shown until Hide is tapped. Verification still uses the PBKDF2 hash.
+- The code is also stored with AES-GCM. The key is HKDF-SHA-256 from `KARTBOARD_CODE_KEY` (info `kartboard.code-key.v1`). If that secret is unset, the key is derived from `KARTBOARD_SESSION_SECRET` with info `kartboard.session-secret.code.v1`.
+- Codes saved before this change, seed entries from `KARTBOARD_USERS`, and codes that cannot be decrypted show **Hidden — regenerate to view**. Regenerating stores a new sealed code.
+
 ## 2026-11-22 — 0.4.1 session control rows
 
 - The session buttons are four equal two-up rows on phone and desktop: Pause and Continue, Advance by 1 minute and Add 1 minute, Previous class and Next class, Changeover and Take a break.

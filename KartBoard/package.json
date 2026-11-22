@@ -1,6 +1,6 @@
 {
   "name": "kartboard",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "description": "KartBoard practice-session board for a local club network or designacle.au",
   "scripts": {

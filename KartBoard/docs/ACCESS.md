@@ -50,7 +50,7 @@ The Worker verifies `Cf-Access-Jwt-Assertion` with the team JWKS from `https://d
 
 `ADMIN_EMAILS` is optional. When set, it is a comma-separated allow-list. An invalid value fails closed. When unset, any account that can pass the Access application for this path may manage codes.
 
-Mutations also require the same Origin and `X-KartBoard-Request` checks as the controller. The plaintext code is returned once, on create or regenerate. Later lists show the name, when it was created, and when it was last used.
+Mutations also require the same Origin and `X-KartBoard-Request` checks as the controller. The admin list decrypts each sealed code and shows it beside the name, with copy and show/hide. Sign-in still checks the PBKDF2 hash and does not need the sealing key. A code with no ciphertext, or one that does not decrypt with the current key, is shown as **Hidden — regenerate to view**.
 
 ## Cloudflare Access changes Peter must make
 

@@ -6,6 +6,8 @@ const path = require('node:path');
 const { createKartBoardApp } = require('../src/application/create-app');
 const { createDefaultState } = require('../src/domain/state');
 const { CODE_ALPHABET, CODE_LENGTH, generateAccessCode, hashAccessCode } = require('../src/auth/codes');
+const { CODE_KEY_INFO, SESSION_SECRET_INFO, sealCode, openCode } = require('../src/auth/code-seal');
+const { MemoryAccessCodeStore } = require('../src/infrastructure/access-code-store');
 const { DEFAULT_ITERATIONS, verifySecret } = require('../src/auth/users');
 const { clearCertCache } = require('../src/auth/access');
 const { ADMIN_BASE_PATH, HOSTED_BASE_PATH } = require('../src/http/constants');
@@ -23,7 +25,8 @@ async function build(overrides = {}) {
     repository: overrides.repository || new MemoryRepository(),
     now: overrides.now || (() => 5_000),
     users: overrides.users === undefined ? [user] : overrides.users,
-    sessionSecret: 'test-secret',
+    sessionSecret: overrides.sessionSecret === undefined ? 'test-secret' : overrides.sessionSecret,
+    codeKey: overrides.codeKey || '',
     codeIterations: overrides.codeIterations === undefined ? 1_000 : overrides.codeIterations,
     accessCodes: overrides.accessCodes,
     accessCodesFile: overrides.accessCodesFile,
@@ -94,12 +97,15 @@ test('admin can create, list, and revoke codes without showing them again', asyn
   assert.equal(body.codes.length, 1);
   assert.equal(body.codes[0].name, 'Controller');
   assert.equal(body.codes[0].source, 'managed');
-  assert.equal(body.codes[0].code, undefined);
+  assert.equal(body.codes[0].code, created.code);
   assert.equal(body.codes[0].hash, undefined);
   assert.equal(body.codes[0].salt, undefined);
+  assert.equal(body.codes[0].codeCipher, undefined);
   const saved = JSON.parse(fs.readFileSync(file, 'utf8'));
   assert.equal(Object.hasOwn(saved.codes[0], 'code'), false);
   assert.notEqual(saved.codes[0].hash, created.code);
+  assert.notEqual(saved.codes[0].codeCipher, created.code);
+  assert.equal(saved.codes[0].codeCipher.includes(created.code), false);
   const duplicate = await app.handle(new Request('http://127.0.0.1/api/admin/codes', {
     method: 'POST', headers: adminHeaders('http://127.0.0.1/api/admin/codes'), body: JSON.stringify({ name: 'Controller' })
   }));
@@ -111,6 +117,40 @@ test('admin can create, list, and revoke codes without showing them again', asyn
   const after = await (await app.handle(new Request('http://127.0.0.1/api/admin/codes', { headers: { 'x-kartboard-client-ip': '127.0.0.1' } }))).json();
   assert.equal(after.codes.length, 0);
   fs.rmSync(directory, { recursive: true, force: true });
+});
+
+test('admin list shows a sealed code and hides hashes, seeds, and codes saved before sealing', async () => {
+  assert.notEqual(CODE_KEY_INFO, SESSION_SECRET_INFO);
+  const sealed = await sealCode('k7m2p9qa', { codeKey: 'dedicated-key' });
+  assert.equal(await openCode({ ...sealed }, { codeKey: 'dedicated-key' }), 'k7m2p9qa');
+  assert.equal(await openCode({ ...sealed }, { sessionSecret: 'dedicated-key' }), null);
+  assert.equal(await openCode({ ...sealed }, { codeKey: 'other-key' }), null);
+  const legacyHash = await hashAccessCode('k7m2p9qa', { name: 'Old', iterations: 1_000 });
+  const store = new MemoryAccessCodeStore([{
+    id: 'legacy', name: 'Old', salt: legacyHash.salt, hash: legacyHash.hash, iterations: 1_000, version: 1, createdAt: 1, lastUsedAt: null
+  }]);
+  const app = await build({ users: [await controllerUser('Seed', '1357')], accessCodes: store, codeKey: 'dedicated-key' });
+  const created = await createCode(app, 'Shown');
+  const body = await (await app.handle(new Request('http://127.0.0.1/api/admin/codes', { headers: { 'x-kartboard-client-ip': '127.0.0.1' } }))).json();
+  const byName = Object.fromEntries(body.codes.map(item => [item.name, item.code]));
+  assert.equal(byName.Shown, created.code);
+  assert.equal(byName.Old, null);
+  assert.equal(byName.Seed, null);
+  const fallback = await build({ users: [], accessCodes: store, codeKey: '', sessionSecret: 'test-secret' });
+  const hidden = await (await fallback.handle(new Request('http://127.0.0.1/api/admin/codes', { headers: { 'x-kartboard-client-ip': '127.0.0.1' } }))).json();
+  assert.equal(hidden.codes.find(item => item.name === 'Shown').code, null);
+  const still = await fallback.handle(new Request('http://127.0.0.1/api/login', {
+    method: 'POST', headers: mutationHeaders('http://127.0.0.1/api/login'), body: JSON.stringify({ code: created.code })
+  }));
+  assert.equal(still.status, 200);
+  const replaced = await fallback.handle(new Request('http://127.0.0.1/api/admin/codes/regenerate', {
+    method: 'POST', headers: adminHeaders('http://127.0.0.1/api/admin/codes/regenerate'), body: JSON.stringify({ name: 'Old' })
+  }));
+  const next = await replaced.json();
+  const visible = await (await fallback.handle(new Request('http://127.0.0.1/api/admin/codes', { headers: { 'x-kartboard-client-ip': '127.0.0.1' } }))).json();
+  assert.equal(visible.codes.find(item => item.name === 'Old').code, next.code);
+  const page = fs.readFileSync(path.join(__dirname, '..', 'public/admin.js'), 'utf8');
+  assert.match(page, /Hidden — regenerate to view/);
 });
 
 test('a code alone signs in the matching controller and a revoked code kills that session', async () => {

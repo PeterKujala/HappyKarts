@@ -38,7 +38,7 @@ node scripts/manage-users.mjs add --name "Controller"
 node scripts/manage-users.mjs export | npx wrangler secret put KARTBOARD_USERS
 ```
 
-`ACCESS_AUD` is the audience tag on **designacle private apps**. Optional: `ADMIN_EMAILS`.
+`ACCESS_AUD` is the audience tag on **designacle private apps**. Optional: `ADMIN_EMAILS`. Optional: `KARTBOARD_CODE_KEY`, a separate secret for sealing access codes. If you skip it, codes are sealed with a key derived from `KARTBOARD_SESSION_SECRET`. See [CONFIGURATION.md](CONFIGURATION.md).
 
 4. Deploy when you mean to:
 
