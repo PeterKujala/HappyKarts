@@ -22,6 +22,13 @@ test('persists schema-v2 state and keeps a prior backup', () => withRepository((
   assert.equal(JSON.parse(fs.readFileSync(`${file}.backup`, 'utf8')).notice, '');
 }));
 
+test('keeps the controller who last changed the day', () => withRepository(({ repository, file }) => {
+  const state = { ...createDefaultState(100), updatedBy: 'Russell' };
+  repository.save(state);
+  assert.equal(repository.load().updatedBy, 'Russell');
+  assert.equal(JSON.parse(fs.readFileSync(file, 'utf8')).updatedBy, 'Russell');
+}));
+
 test('recovers from backup when primary JSON is corrupt', () => withRepository(({ repository, file }) => {
   const state = createDefaultState(100);
   repository.save(state);

@@ -6,78 +6,108 @@
 - Rotation edits never reset or alter the active session timer.
 - Public displays recover automatically after temporary connection loss.
 - Existing saved state migrates without manual intervention.
-- Domain behavior is testable without starting an HTTP server.
-- The POC runs without third-party packages or a build tool.
+- Domain behavior is testable without starting an HTTP server or a Worker.
+- The same reducer runs locally and on Cloudflare.
 
 ## Runtime topology
 
 ```text
-KAC browser ──POST actions──┐
-                           │
-Public boards ──SSE────────┼── Local Node server ── State repository
-                           │                         ├─ kartboard-state.json
-Any browser ──GET state────┘                         └─ backup + temporary file
+Public board ── GET state / SSE ─────────────┐
+                                             │
+KAC browser ── PIN login, then POST actions ─┼── Node server (LAN) ── file repository
+                                             │                         kartboard-state.json + backup
+                                             │
+                                             └── Cloudflare Worker ── Durable Object KartBoardRoom
+                                                   /auth/apps/kartboard*     SQLite storage + SSE clients
 ```
 
-The server is the sole authority for the practice-day state. Browsers calculate countdown presentation from the server-supplied timestamps; they do not send a request every second.
+The server, whether Node or the Durable Object, is the sole authority for the practice-day state. Browsers calculate the countdown from server timestamps. They do not send a request every second.
+
+Hosted pages live at `https://designacle.au/auth/apps/kartboard/`. The browser resolves `styles.css`, `api/state`, and `api/events` from the document URL, so the same files work at the local server root. `/auth/apps/kartboard` redirects to `control.html`.
 
 ## Server boundaries
 
 ### `src/domain/state.js`
 
-Owns schema v2, state normalization, legacy migration, stable class identities and read-only selectors. Class entries use `{ id, name }` rather than names alone so duplicates and active-class removal are unambiguous.
+Owns schema v2, state normalization, legacy migration, stable class identities, and read-only selectors. Class entries use `{ id, name }`.
 
-The central scheduling invariant is:
+The scheduling invariant is:
 
 - `currentClass` is a snapshot of the class currently on track.
 - `nextIndex` identifies the next entry in `rotation` that will run.
 - `rotation` represents future cyclic order and may exclude `currentClass`.
 
-This lets a KAC delete the active class from future rotation without changing the active display or timer.
-
 ### `src/domain/reducer.js`
 
-Contains pure state transitions. It does not read files, access HTTP objects or broadcast events. Every accepted action returns a new state with an incremented revision.
+Pure state transitions. It does not read files, access HTTP, or broadcast. Every accepted action except `reset` returns a new state with an incremented revision. `reset` returns the default day.
 
 ### `src/infrastructure/file-state-repository.js`
 
-Loads, migrates and saves state. A previous-state backup and temporary write file provide basic local recovery. The interface can later be replaced by a database repository without changing domain logic or HTTP routes.
+Local load, migrate, save, backup, and recovery. `updatedBy` is kept on the JSON even though the domain normalizer does not interpret it. Used by `npm start`. Not used on Cloudflare.
+
+### `src/infrastructure/durable-state-repository.js`
+
+The same load/migrate/save contract over a key-value storage object (`get` / `put`). The Worker Durable Object passes `ctx.storage`. Tests use an in-memory storage. Legacy rotations are migrated on load.
 
 ### `src/infrastructure/sse-hub.js`
 
-Manages Server-Sent Event clients, state broadcasts, cleanup and heartbeat messages. SSE is one-way because public boards only consume state.
+Web `ReadableStream` Server-Sent Events: an immediate `state` event, `retry: 1500`, and a 20-second heartbeat while anyone is connected. The Node server writes that stream to the HTTP response. The Durable Object returns it directly.
 
-### `src/http/create-server.js`
+### `src/application/coordinator.js`
 
-Provides API routing, JSON parsing, structured errors, static files, security headers, API metadata and optimistic revision checks. Importing it does not start a listener, which keeps integration tests isolated.
+Loads state once, applies a synchronous mutation, saves, then publishes the public view. The revision check and the reducer run before any `await`, so two controllers cannot both pass the same `expectedRevision`.
 
-### `server.js`
+### `src/http/handle-request.js`
 
-The composition root. It loads runtime configuration, creates the application, records the process ID and begins listening.
+Shared router for the Node server and the Durable Object. It understands the base path, read-only routes, PIN login, session cookies, Origin and `X-KartBoard-Request` checks, required `expectedRevision`, and static files.
+
+### `src/http/create-server.js` and `server.js`
+
+Node composition root. Importing the HTTP module does not listen. `server.js` loads config, the user file, and the session secret, then listens.
+
+### `worker/index.mjs` and `worker/room.mjs`
+
+The Worker serves embedded static files for `/auth/apps/kartboard` and forwards `/api/*` to one Durable Object named `practice-day`. `workers.dev` and preview URLs are disabled in `wrangler.jsonc`.
 
 ## Browser boundaries
 
-- `public/js/api.js`: HTTP, SSE, structured errors and API compatibility.
-- `public/js/selectors.js`: display-oriented state derivation and countdown formatting.
-- `public/js/rotation-editor.js`: shared pointer/touch rotation editing with a floating drag ghost and stable placeholder.
-- `public/js/dom.js`: small safe DOM helpers.
-- `public/js/toast.js`: transient user feedback.
-- `public/control.js`: KAC workflow orchestration only.
-- `public/board.js`: read-only public-board rendering only.
-
-The controller sends stable class IDs back to the server. Editing captures a base `revision`; a save using a stale revision receives HTTP 409 instead of overwriting another controller.
+- `public/js/api.js`: HTTP and SSE against the document URL, JSON posts with `X-KartBoard-Request: 1`.
+- `public/js/pin-gate.js`: name choice and PIN pad. No separate login page.
+- `public/js/selectors.js`, `rotation-editor.js`, `dom.js`, `toast.js`: display and editing.
+- `public/control.js`: KAC workflow. Every mutation sends `expectedRevision`. HTTP 409 closes edit mode, reloads state, and shows the refresh banner.
+- `public/board.js`: read-only.
 
 ## API
 
+All paths below are under the base path. Locally that is empty. Hosted, it is `/auth/apps/kartboard`.
+
 ### `GET /api/meta`
 
-Returns API/schema versions and accepted actions. The browser checks this before enabling controls, preventing stale-server and new-interface mismatches.
+API version 2, schema version, and accepted actions. Public.
 
 ### `GET /api/state`
 
-Returns the current public state.
+Current public state, including `updatedBy` (empty string if nobody has changed it yet). Public.
+
+### `GET /api/events`
+
+SSE `state` events. Public and read-only.
+
+### `GET /api/session`
+
+`{ authenticated, user, users }`. Names are shown so the PIN pad can list controllers. Hashes are not returned.
+
+### `POST /api/login`
+
+`{ "name": "Russell", "pin": "1234" }`. Requires same-origin JSON and `X-KartBoard-Request: 1`. Sets the session cookie. Failures are rate limited per IP and per name.
+
+### `POST /api/logout`
+
+Clears the cookie. Same request checks as login.
 
 ### `POST /api/action`
+
+Requires a valid controller session, the same request checks, and an integer `expectedRevision`.
 
 ```json
 {
@@ -87,19 +117,19 @@ Returns the current public state.
 }
 ```
 
-Errors use `{ "error": { "code": "...", "message": "..." } }`.
+Errors use `{ "error": { "code": "...", "message": "..." } }`. `REVISION_REQUIRED` is 400. `REVISION_CONFLICT` is 409. `AUTH_REQUIRED` is 401. `CROSS_ORIGIN` is 403. `RATE_LIMITED` is 429.
 
-### `GET /api/events`
+## Access
 
-SSE stream using the named `state` event. It includes retry guidance and heartbeat comments.
+See [ACCESS.md](ACCESS.md). The public board and its read API are unauthenticated. The controller is a PIN plus a signed cookie. Cloudflare Access must bypass `designacle.au/auth/apps/kartboard*` so paddock phones are not sent to the Access login. The Worker does not trust Access headers.
 
-## Known POC boundaries
+## Known limits
 
-- No KAC authentication or authorization.
-- One practice day and one venue per server instance.
-- File persistence assumes a single server process.
-- No TLS; access is appropriate only on a trusted local network.
-- No audit trail beyond current state and one backup.
-- No offline mutation queue; disconnected controllers must reconnect before acting.
-
-Before hosted deployment, add authenticated controller roles, HTTPS, a transactional database, club/day tenancy, audit events, rate limiting and deployment monitoring.
+- One practice day and one venue per deployment.
+- Local file persistence assumes a single Node process.
+- The hosted object is the concurrency boundary for the club.
+- PIN login is deliberately small. It is not a substitute for Access on other apps.
+- No audit log beyond `updatedBy` and the local backup file.
+- No offline mutation queue.
+- Client clocks are assumed to be roughly aligned with the server. There is no clock-offset correction.
+- Everyday actions now send `expectedRevision`. Two controllers can no longer silently overwrite each other; the later one gets 409 and must refresh.

@@ -1,7 +1,11 @@
 import { $, $$, button } from './dom.js';
 import { copyRotation, duplicateClassItem } from './selectors.js';
 
-export function renderRotationEditor({ container, items, onChange, onEdit, allowDuplicate = true, showMoveButtons = false, onMinimumReached }) {
+/**
+ * @param {{ container: Element, items: any[], onChange: (items: any[]) => void, onEdit?: (item: any) => void, allowDuplicate?: boolean, showMoveButtons?: boolean, onMinimumReached?: () => void }} options
+ */
+export function renderRotationEditor(options) {
+  const { container, items, onChange, onEdit, allowDuplicate = true, showMoveButtons = false, onMinimumReached } = options;
   container.replaceChildren(...items.map((item, index) => createTile(item, index)));
   $$('.setup-class', container).forEach(tile => bindPointerReorder(tile, container, items, onChange));
 

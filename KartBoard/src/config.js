@@ -1,4 +1,5 @@
 const path = require('path');
+const { normalizeBase } = require('./http/paths');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 
@@ -8,7 +9,12 @@ function loadConfig(env = process.env) {
     port: parsePort(env.KARTBOARD_PORT, 4317),
     publicDir: path.join(ROOT_DIR, 'public'),
     stateFile: env.KARTBOARD_STATE_FILE || path.join(ROOT_DIR, 'kartboard-state.json'),
-    pidFile: env.KARTBOARD_PID_FILE || path.join(ROOT_DIR, 'kartboard.pid')
+    pidFile: env.KARTBOARD_PID_FILE || path.join(ROOT_DIR, 'kartboard.pid'),
+    basePath: normalizeBase(env.KARTBOARD_BASE_PATH || ''),
+    usersFile: env.KARTBOARD_USERS_FILE || path.join(ROOT_DIR, 'kartboard-users.json'),
+    sessionSecretFile: env.KARTBOARD_SESSION_SECRET_FILE || path.join(ROOT_DIR, 'kartboard-session.secret'),
+    usersJson: env.KARTBOARD_USERS || '',
+    sessionSecret: env.KARTBOARD_SESSION_SECRET || ''
   });
 }
 

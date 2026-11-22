@@ -1,0 +1,27 @@
+{
+  // Cloudflare Worker for designacle.au/auth/apps/kartboard*.
+  // workers.dev and preview URLs stay off so the app is only on this route.
+  // The public site remains on Cloudflare Pages. This route is more specific.
+  // Do not deploy until the Access bypass and secrets in docs/DEPLOYMENT.md are ready.
+  "name": "kartboard",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-11-22",
+  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "7912f938c8a8f9ab3f6985fa2ffcd80f",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "designacle.au/auth/apps/kartboard*", "zone_name": "designacle.au" }
+  ],
+  // One SQLite-backed Durable Object holds the practice-day state, SSE clients, and sign-in limits.
+  // SQLite Durable Objects are available on the Workers Free plan. No separate KV or D1 database.
+  "durable_objects": {
+    "bindings": [
+      { "name": "KARTBOARD", "class_name": "KartBoardRoom" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["KartBoardRoom"] }
+  ],
+  "observability": { "enabled": true }
+}

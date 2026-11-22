@@ -56,7 +56,7 @@ test('pause and resume preserve elapsed time', () => {
 
 test('rejects invalid actions and transitions', () => {
   const state = createDefaultState(0);
-  assert.throws(() => reduceState(state, 'not-real', {}, 1), error => error.code === 'UNKNOWN_ACTION');
-  assert.throws(() => reduceState(state, 'pause', {}, 1), error => error.code === 'INVALID_TRANSITION');
-  assert.throws(() => reduceState(state, 'configure', { rotation: [] }, 1), error => error.code === 'EMPTY_ROTATION');
+  assert.throws(() => reduceState(state, 'not-real', {}, 1), error => /** @type {{ code?: string }} */ (error).code === 'UNKNOWN_ACTION');
+  assert.throws(() => reduceState(state, 'pause', {}, 1), error => /** @type {{ code?: string }} */ (error).code === 'INVALID_TRANSITION');
+  assert.throws(() => reduceState(state, 'configure', { rotation: [] }, 1), error => /** @type {{ code?: string }} */ (error).code === 'EMPTY_ROTATION');
 });

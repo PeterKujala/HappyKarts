@@ -1,6 +1,16 @@
 # KartBoard Changelog
 
-This history is reconstructed from the surviving project, artifact timestamps, and product discussion. The directory is not currently available as a Git repository, so early dates, exact edit order, and commit-level attribution are unavailable. Entries focus on meaningful milestones rather than every small revision.
+Entries from 22 November 2026 onward match git history in the HappyKarts repository. Earlier entries were reconstructed before that import, so their exact edit order is not a git log.
+
+## 2026-11-22 — 0.3.0 hosted board and controller PIN
+
+- Serve KartBoard from a Cloudflare Worker at `designacle.au/auth/apps/kartboard*`, with `workers.dev` and preview URLs off. Static files use that base path. `/board.html` and `/control.html` are the public and controller URLs.
+- Keep the domain reducer, schema migration, and revision rules. Local mode still uses `kartboard-state.json`. The hosted store is one SQLite Durable Object.
+- Leave the public board, state, metadata, and SSE readable with no login. Require a registered PIN, a signed HttpOnly cookie, a same-origin JSON header, and `expectedRevision` on every mutation. Rate-limit PIN attempts. Record `updatedBy`.
+- Document the Cloudflare Access bypass Peter must add for `auth/apps/kartboard*`, plus the Worker route, Durable Object binding, and secrets. Do not deploy from this change.
+- Stop tracking live state. Ship `kartboard-state.example.json`. Point QR codes at the hosted URLs. Drop the hard-coded Node path from the Windows launcher.
+- Store the feature walkthrough with Git LFS from this commit forward, without rewriting older history.
+- Add a proprietary licence, GitHub Actions for lint, build, and test, and `tsc --noEmit`.
 
 ## 2026-08-28 — Persistent project memory
 

@@ -3,7 +3,13 @@ const path = require('path');
 const { createDefaultState, migrateState } = require('../domain/state');
 
 class FileStateRepository {
-  constructor(filePath, { logger = console, now = Date.now } = {}) {
+  /**
+   * @param {string} filePath
+   * @param {{ logger?: { warn?: (message?: string) => void, error?: (...args: unknown[]) => void }, now?: () => number }} [options]
+   */
+  constructor(filePath, options = {}) {
+    const logger = options.logger || console;
+    const now = options.now || Date.now;
     this.filePath = filePath;
     this.backupPath = `${filePath}.backup`;
     this.tempPath = `${filePath}.tmp`;
@@ -13,11 +19,11 @@ class FileStateRepository {
 
   load() {
     const primary = this.#read(this.filePath);
-    if (primary) return migrateState(primary, this.now());
+    if (primary) return restore(primary, this.now());
     const backup = this.#read(this.backupPath);
     if (backup) {
       this.logger.warn?.('KartBoard recovered state from the backup file.');
-      return migrateState(backup, this.now());
+      return restore(backup, this.now());
     }
     return createDefaultState(this.now());
   }
@@ -40,6 +46,12 @@ class FileStateRepository {
       return null;
     }
   }
+}
+
+function restore(raw, now) {
+  const state = migrateState(raw, now);
+  const updatedBy = typeof raw?.updatedBy === 'string' ? raw.updatedBy.trim().slice(0, 60) : '';
+  return updatedBy ? { ...state, updatedBy } : state;
 }
 
 module.exports = { FileStateRepository };
