@@ -94,14 +94,17 @@ function render(nextState) {
   setText('#venue', state.venue); setText('#dayLabel', state.dayLabel);
   setText('#current', schedule.current); setText('#next', schedule.next); setText('#then', schedule.then); setText('#status', copy[0]);
   if (document.activeElement !== $('#noticeInput')) $('#noticeInput').value = state.notice;
-  const labels = { ready: 'Start first session', running: 'Start next session', paused: 'Resume session', changeover: 'Start next session', break: 'Resume with current class', finished: 'Start a new day' };
+  const labels = { ready: 'Start first session', running: 'Start next session', paused: 'Continue', changeover: 'Start next session', break: 'Continue', finished: 'Start a new day' };
   setText('#mainActionLabel', labels[state.status] || 'Start next session');
   const learn = showMe.active;
   const timingLocked = !learn && !['running', 'paused'].includes(state.status);
-  $('#pause').textContent = state.status === 'paused' ? 'Resume' : 'Pause';
-  $('#pause').disabled = timingLocked;
+  const classMoveLocked = !learn && !['running', 'paused', 'changeover', 'break'].includes(state.status);
+  $('#pause').disabled = !learn && state.status !== 'running';
+  $('#continue').disabled = !learn && !['paused', 'break'].includes(state.status);
   $('[data-action="addMinute"]').disabled = timingLocked;
   $('[data-action="advanceMinute"]').disabled = timingLocked;
+  $('[data-action="previous"]').disabled = classMoveLocked;
+  $('#nextClass').disabled = classMoveLocked;
   $('#edit').disabled = !learn && !['ready', 'finished'].includes(state.status);
   if (!liveEditing) renderLockedRotation();
   tick();
@@ -292,7 +295,7 @@ $('#mainAction').addEventListener('click', () => {
   if (['paused', 'break'].includes(state.status)) return dispatch('resume');
   return dispatch('next');
 });
-$('#pause').addEventListener('click', () => dispatch(state.status === 'paused' ? 'resume' : 'pause'));
+$('#pause').addEventListener('click', () => dispatch('pause'));
 $$('[data-action]').forEach(control => control.addEventListener('click', () => dispatch(control.dataset.action)));
 $('#openBoard').addEventListener('click', () => window.open('board.html', 'kartboard_public', 'popup,width=1280,height=780'));
 $('#logout').addEventListener('click', async () => {

@@ -66,6 +66,22 @@ test('every controller control has show-me help and sign-in is code only', () =>
   assert.match(fs.readFileSync(path.join(root, 'public/js/show-me.mjs'), 'utf8'), /showModal/);
   assert.match(fs.readFileSync(path.join(root, 'public/js/show-me.mjs'), 'utf8'), /Escape/);
   assert.match(fs.readFileSync(path.join(root, 'public/styles.css'), 'utf8'), /min-height:\s*44px/);
+  const grid = html.match(/<div class="quick-grid">([\s\S]*?)<\/div>/);
+  assert.ok(grid);
+  const labels = [...grid[1].matchAll(/>([^<]+)<\/button>/g)].map(match => match[1].trim());
+  assert.deepEqual(labels, [
+    'Pause', 'Continue',
+    'Advance by 1 minute', 'Add 1 minute',
+    'Previous class', 'Next class',
+    'Changeover', 'Take a break'
+  ]);
+  assert.match(grid[1], /id="continue"[^>]*data-action="resume"/);
+  assert.match(grid[1], /id="nextClass"[^>]*data-action="next"/);
+  assert.doesNotMatch(grid[1], />Resume</);
+  const css = fs.readFileSync(path.join(root, 'public/styles.css'), 'utf8');
+  assert.match(css, /\.quick-grid \{ display: grid; grid-template-columns: 1fr 1fr;/);
+  assert.doesNotMatch(css, /advance-minute"\] \{ grid-column/);
+  assert.match(fs.readFileSync(path.join(root, 'public/help.html'), 'utf8'), /Continue<\/strong> starts it again/);
 });
 
 function buttonCalls(source) {
