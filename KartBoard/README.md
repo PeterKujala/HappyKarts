@@ -7,7 +7,7 @@ The hosted app is the one to use at the track:
 - Public board: https://designacle.au/auth/apps/kartboard/board.html
 - Controller: https://designacle.au/auth/apps/kartboard/control.html
 
-The public board needs no login. The controller asks for an access code only. KartBoard finds the matching name and the page says **Signed in as** that controller. Instructions are on the controller via **Instructions**, and **Show me** explains each control without changing the day. **Advance by 1 minute** brings the current session forward so it ends one minute sooner. **+ 1 minute** still adds time. KartBoard is communication only. Lights, flags, officials, and announcements stay authoritative.
+The public board needs no login. The controller asks for an access code only. KartBoard finds the matching name and the page says **Signed in as** that controller. Instructions are on the controller via **Instructions**, and **Show me** explains each control without changing the day. Session controls are Pause and Continue, Advance by 1 minute and Add 1 minute, Previous class and Next class, then Changeover and Take a break. **Advance by 1 minute** ends the current session one minute sooner. **Add 1 minute** adds time. KartBoard is communication only. Lights, flags, officials, and announcements stay authoritative.
 
 A local server is still available for a paddock with no internet. See [Local network](#local-network).
 

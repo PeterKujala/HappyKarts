@@ -75,7 +75,8 @@ button:disabled { cursor: not-allowed; opacity: .45; transform: none !important;
 .next-name { font-size: 28px; font-weight: 850; letter-spacing: -.04em; }
 .then-name { margin-top: 5px; color: var(--muted); font-size: 13px; }
 .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.quick-grid .button { padding: 0 10px; }
+.quick-grid .button { width: 100%; min-width: 0; min-height: 48px; padding: 8px 10px; white-space: normal; line-height: 1.2; }
+.finish-day { width: 100%; margin-top: 9px; }
 .notice-form { display: flex; gap: 8px; }
 .notice-form input { min-width: 0; flex: 1; border: 1px solid var(--line); border-radius: 11px; padding: 0 12px; outline: none; }
 .notice-form input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,63,49,.09); }
@@ -132,8 +133,6 @@ body.show-me .control-wrap { outline: 4px solid var(--lime); outline-offset: 6px
 .show-me-dialog h3 { margin: 16px 0 4px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .show-me-dialog p { margin: 0; }
 .show-me-dialog .button { min-height: 44px; min-width: 44px; width: 100%; margin-top: 18px; }
-.quick-grid .button { white-space: normal; line-height: 1.2; padding: 8px 10px; }
-.quick-grid .button[data-help="advance-minute"] { grid-column: 1 / -1; }
 .help-page { max-width: 760px; }
 .help-page h1 { margin: 8px 0 0; font-size: 36px; letter-spacing: -.04em; }
 .help-page h2 { margin: 22px 0 8px; font-size: 20px; }
@@ -205,6 +204,8 @@ dialog::backdrop { background: rgba(8,27,19,.54); backdrop-filter: blur(3px); }
   .board-main { grid-template-columns: 1fr; align-content: center; }
   .queue { border-left: 0; border-top: 1px solid rgba(255,255,255,.16); padding: 12px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
   .dashboard { grid-template-columns: 1fr; }
+  .quick-grid { grid-template-columns: 1fr 1fr; }
+  .quick-grid .button { width: 100%; min-width: 0; }
   .control-shell { padding: 14px; }
   .control-top { align-items: flex-start; }
   .control-top-actions .button span { display: none; }

@@ -129,7 +129,7 @@ Saving Day setup deliberately resets the operational day to `ready`, selects the
 - `running` or `changeover`: advance to the next class and start a fresh countdown;
 - `paused` or `break`: resume the current class.
 
-The everyday session change is intentionally one large, obvious tap. Secondary controls are available for Pause/Resume, add one minute, Changeover, Previous class, Take a break, and Finish day. The KAC can also post or clear a notice of up to 140 characters.
+The everyday session change is intentionally one large, obvious tap. Session controls are Pause and Continue, Advance by 1 minute and Add 1 minute, Previous class and Next class, Changeover and Take a break, then Finish day. Continue is the resume action. The KAC can also post or clear a notice of up to 140 characters.
 
 **DECIDED:** Normal running should require no typing.
 

@@ -2,6 +2,11 @@
 
 Entries from 22 November 2026 onward match git history in the HappyKarts repository. Earlier entries were reconstructed before that import, so their exact edit order is not a git log.
 
+## 2026-11-22 — 0.4.1 session control rows
+
+- The session buttons are four equal two-up rows on phone and desktop: Pause and Continue, Advance by 1 minute and Add 1 minute, Previous class and Next class, Changeover and Take a break.
+- Continue is the existing resume action, labeled Continue. Next class is the existing next action. No new reducer action was added. Finish day stays under those rows. The large button under the clock still starts the first session.
+
 ## 2026-11-22 — 0.4.0 admin access codes, Show me, and advance minute
 
 - Admin creates, lists, revokes, and regenerates controller codes. The code is an 8-character string from `a-z` and `2-9` with `0`, `o`, `1`, and `l` left out. It is shown once. Later lists show the name, created time, and last used. Hashes are PBKDF2-SHA-256 in the Durable Object. `KARTBOARD_USERS` remains a seed and loses to a Durable Object code with the same name.

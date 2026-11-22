@@ -64,18 +64,24 @@ export const HELP_TOPICS = {
   },
   'main-action': {
     title: 'Main session button',
-    happens: 'Starts the first session, starts the next class, resumes a pause or a break, or starts a new day after Finish. The label changes with the state of the day.',
-    when: 'This is the button you use most. Tap it to put a class on track or to move to the next one.',
-    caveat: 'Starting the next class resets that session clock to the usual length. The public board updates immediately.'
+    happens: 'Starts the first session, starts the next class while one is running, continues a pause or a break, or starts a new day after Finish. The label changes with the state of the day.',
+    when: 'This is the large button under the clock. Use it to put the first class on track, or to continue after a pause.',
+    caveat: 'While a class is running, Next class does the same move to the following class. Continue is the separate button for a pause or a break.'
   },
   pause: {
-    title: 'Pause or resume',
-    happens: 'Pauses the countdown, or resumes it with the same time that was left.',
+    title: 'Pause',
+    happens: 'Holds the countdown and keeps the time that is left.',
     when: 'When the session should wait without moving on to the next class.',
-    caveat: 'Pause is only for a running or already paused session. A break uses Resume on the main button instead.'
+    caveat: 'Pause only works while a session is running. Tap Continue to start the countdown again from the time that was left.'
+  },
+  continue: {
+    title: 'Continue',
+    happens: 'Starts the countdown again from the time left at Pause, or puts the current class back on track after a break. This is the existing resume action.',
+    when: 'After Pause, or after Take a break, when that same class should continue.',
+    caveat: 'Continue does not move to the next class. Use Next class for that.'
   },
   'add-minute': {
-    title: '+ 1 minute',
+    title: 'Add 1 minute',
     happens: 'Gives the current session one more minute. The countdown ends later, and the public board shows the new time.',
     when: 'When the class on track needs a little longer.',
     caveat: 'It only changes the current session. It does not reorder classes. It is available while the session is running or paused.'
@@ -84,13 +90,13 @@ export const HELP_TOPICS = {
     title: 'Advance by 1 minute',
     happens: 'Brings the current session forward by one minute, so the countdown ends sooner and the next class can start earlier. The public board shows the new time immediately.',
     when: 'When the class on track should finish one minute sooner.',
-    caveat: 'The clock stops at zero. It does not skip a class and it does not borrow time from the next session. Use the main button when you actually want the next class.'
+    caveat: 'The clock stops at zero. It does not skip a class and it does not borrow time from the next session. Use Next class when you actually want the next class.'
   },
   changeover: {
     title: 'Changeover',
     happens: 'Marks a changeover on the public board and clears the session clock.',
     when: 'Between classes, while karts are leaving or entering the track and you are not ready to start the next countdown.',
-    caveat: 'The running order does not move until you tap the main button to start the next session.'
+    caveat: 'The running order does not move until you tap Next class.'
   },
   previous: {
     title: 'Previous class',
@@ -98,11 +104,17 @@ export const HELP_TOPICS = {
     when: 'When the current class was started by mistake.',
     caveat: 'The public board changes immediately. The time already run is not restored.'
   },
+  'next-class': {
+    title: 'Next class',
+    happens: 'Puts the next class on track and starts its countdown at the usual length. The public board updates immediately and a paddock notice is cleared. This is the existing next action.',
+    when: 'When the class on track is finished and the following class should start.',
+    caveat: 'Next class does not start the first session of the day. Use the large button under the clock for that. It does not restore a paused clock; Continue does that.'
+  },
   break: {
     title: 'Take a break',
     happens: 'Shows a break on the public board and clears the session clock.',
     when: 'For lunch or a stop that is not a normal class change.',
-    caveat: 'The main button then resumes the class that was current. It does not skip ahead.'
+    caveat: 'Continue puts the same class back on track. Next class skips ahead instead.'
   },
   finish: {
     title: 'Finish day',
@@ -222,7 +234,7 @@ export const HELP_TOPICS = {
     title: 'Usual session length',
     happens: 'How long a newly started class counts down, in minutes.',
     when: 'During day setup, before sessions begin.',
-    caveat: 'From 1 to 30 minutes. It does not change a clock that is already running. Use + 1 minute or Advance by 1 minute for the class on track.'
+    caveat: 'From 1 to 30 minutes. It does not change a clock that is already running. Use Add 1 minute or Advance by 1 minute for the class on track.'
   },
   'cancel-setup': {
     title: 'Cancel setup',

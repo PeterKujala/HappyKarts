@@ -48,14 +48,16 @@
         <section class="card side-card">
           <div class="card-head"><h2>Quick controls</h2></div>
           <div class="quick-grid">
-            <button class="button" id="pause" data-help="pause">Pause</button>
-            <button class="button" data-action="addMinute" data-help="add-minute">+ 1 minute</button>
-            <button class="button" data-action="advanceMinute" data-help="advance-minute">Advance by 1 minute</button>
-            <button class="button" data-action="changeover" data-help="changeover">Changeover</button>
-            <button class="button" data-action="previous" data-help="previous">Previous class</button>
-            <button class="button" data-action="break" data-help="break">Take a break</button>
-            <button class="button warn" data-action="finish" data-help="finish">Finish day</button>
+            <button type="button" class="button" id="pause" data-help="pause">Pause</button>
+            <button type="button" class="button" id="continue" data-action="resume" data-help="continue">Continue</button>
+            <button type="button" class="button" data-action="advanceMinute" data-help="advance-minute">Advance by 1 minute</button>
+            <button type="button" class="button" data-action="addMinute" data-help="add-minute">Add 1 minute</button>
+            <button type="button" class="button" data-action="previous" data-help="previous">Previous class</button>
+            <button type="button" class="button" id="nextClass" data-action="next" data-help="next-class">Next class</button>
+            <button type="button" class="button" data-action="changeover" data-help="changeover">Changeover</button>
+            <button type="button" class="button" data-action="break" data-help="break">Take a break</button>
           </div>
+          <button type="button" class="button warn finish-day" data-action="finish" data-help="finish">Finish day</button>
         </section>
         <section class="card side-card">
           <div class="card-head"><h2>Paddock notice</h2></div>
