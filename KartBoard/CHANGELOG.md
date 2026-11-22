@@ -2,6 +2,15 @@
 
 Entries from 22 November 2026 onward match git history in the HappyKarts repository. Earlier entries were reconstructed before that import, so their exact edit order is not a git log.
 
+## 2026-11-22 — 0.4.0 admin access codes, Show me, and advance minute
+
+- Admin creates, lists, revokes, and regenerates controller codes. The code is an 8-character string from `a-z` and `2-9` with `0`, `o`, `1`, and `l` left out. It is shown once. Later lists show the name, created time, and last used. Hashes are PBKDF2-SHA-256 in the Durable Object. `KARTBOARD_USERS` remains a seed and loses to a Durable Object code with the same name.
+- The controller sign-in card is code only. There is no name field. The server finds the name, and the page says **Signed in as** that controller. Older callers can still send a name with a code or numeric PIN. Revoke and regenerate invalidate sessions for that code.
+- Admin is served at `/auth/apps/kartboard-admin/*` on the same Worker, behind **designacle private apps**. The Worker verifies `Cf-Access-Jwt-Assertion` for team `designacle.cloudflareaccess.com` and `ACCESS_AUD`, and fails closed when the audience is missing. `ADMIN_EMAILS` is an optional allow-list. The bypass for the public board must be `auth/apps/kartboard` and `auth/apps/kartboard/*`, not `auth/apps/kartboard*`, so it does not cover admin. Local admin is loopback-only unless `KARTBOARD_ADMIN_TOKEN` is set.
+- **Instructions** opens `/help.html`. **Show me** explains every control and does not send a mutation, including before sign-in. The choice is remembered in `localStorage`.
+- **Advance by 1 minute** shortens the current session by one minute, the opposite of **+ 1 minute** on the same `startedAt` or `pausedRemainingMs` fields. The clock stops at zero. It uses the normal session, Origin, header, and `expectedRevision` path, so the public board updates with the next state.
+- Do not deploy from this change.
+
 ## 2026-11-22 — 0.3.0 hosted board and controller PIN
 
 - Serve KartBoard from a Cloudflare Worker at `designacle.au/auth/apps/kartboard*`, with `workers.dev` and preview URLs off. Static files use that base path. `/board.html` and `/control.html` are the public and controller URLs.

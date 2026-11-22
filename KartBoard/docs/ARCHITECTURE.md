@@ -14,16 +14,18 @@
 ```text
 Public board ── GET state / SSE ─────────────┐
                                              │
-KAC browser ── PIN login, then POST actions ─┼── Node server (LAN) ── file repository
-                                             │                         kartboard-state.json + backup
+KAC browser ── code login, then POST actions ┼── Node server (LAN) ── file repository
+                                             │                         kartboard-state.json + access codes
                                              │
-                                             └── Cloudflare Worker ── Durable Object KartBoardRoom
-                                                   /auth/apps/kartboard*     SQLite storage + SSE clients
+Admin browser ── Access JWT, then code API ──┴── Cloudflare Worker ── Durable Object KartBoardRoom
+      /auth/apps/kartboard-admin*                  /auth/apps/kartboard*     SQLite storage + SSE clients
 ```
 
 The server, whether Node or the Durable Object, is the sole authority for the practice-day state. Browsers calculate the countdown from server timestamps. They do not send a request every second.
 
-Hosted pages live at `https://designacle.au/auth/apps/kartboard/`. The browser resolves `styles.css`, `api/state`, and `api/events` from the document URL, so the same files work at the local server root. `/auth/apps/kartboard` redirects to `control.html`.
+Hosted pages live at `https://designacle.au/auth/apps/kartboard/`. Admin lives at `https://designacle.au/auth/apps/kartboard-admin/` so it stays on the existing Access application. The browser resolves `styles.css`, `api/state`, and `api/events` from the document URL, so the same files work at the local server root. `/auth/apps/kartboard` redirects to `control.html`.
+
+The only clock is the current session. `+ 1 minute` moves `startedAt` later while running, or adds to `pausedRemainingMs` while paused, so more time remains. **Advance by 1 minute** uses those same fields with the opposite sign, so the countdown ends one minute sooner and the next class can be started earlier. Remaining time stops at zero. The next class does not store its own start time; it starts when the controller taps the main button. Both actions go through `POST /api/action` with the session, Origin header, and `expectedRevision`. The public board reads the updated `startedAt` from the next state event.
 
 ## Server boundaries
 
@@ -59,7 +61,7 @@ Loads state once, applies a synchronous mutation, saves, then publishes the publ
 
 ### `src/http/handle-request.js`
 
-Shared router for the Node server and the Durable Object. It understands the base path, read-only routes, PIN login, session cookies, Origin and `X-KartBoard-Request` checks, required `expectedRevision`, and static files.
+Shared router for the Node server and the Durable Object. It understands the base path, the admin base path, read-only routes, code login, session cookies, Origin and `X-KartBoard-Request` checks, required `expectedRevision`, admin code routes, and static files.
 
 ### `src/http/create-server.js` and `server.js`
 
@@ -67,12 +69,14 @@ Node composition root. Importing the HTTP module does not listen. `server.js` lo
 
 ### `worker/index.mjs` and `worker/room.mjs`
 
-The Worker serves embedded static files for `/auth/apps/kartboard` and forwards `/api/*` to one Durable Object named `practice-day`. `workers.dev` and preview URLs are disabled in `wrangler.jsonc`.
+The Worker serves embedded static files for `/auth/apps/kartboard` and `/auth/apps/kartboard-admin`, verifies the Cloudflare Access JWT before admin HTML or `/api/admin/*`, and forwards API requests to one Durable Object named `practice-day`. The Durable Object checks the JWT again. `workers.dev` and preview URLs are disabled in `wrangler.jsonc`.
 
 ## Browser boundaries
 
 - `public/js/api.js`: HTTP and SSE against the document URL, JSON posts with `X-KartBoard-Request: 1`.
-- `public/js/pin-gate.js`: name choice and PIN pad. No separate login page.
+- `public/js/pin-gate.js`: one access-code field. No name picker.
+- `public/js/help-topics.mjs` and `public/js/show-me.mjs`: Show me notes and the fetch guard. `help.html` is the written guide.
+- `public/admin.html`: create, list, revoke, and regenerate codes. The code is shown once.
 - `public/js/selectors.js`, `rotation-editor.js`, `dom.js`, `toast.js`: display and editing.
 - `public/control.js`: KAC workflow. Every mutation sends `expectedRevision`. HTTP 409 closes edit mode, reloads state, and shows the refresh banner.
 - `public/board.js`: read-only.
@@ -95,11 +99,15 @@ SSE `state` events. Public and read-only.
 
 ### `GET /api/session`
 
-`{ authenticated, user, users }`. Names are shown so the PIN pad can list controllers. Hashes are not returned.
+`{ authenticated, user, users }`. `users` is the merged name list for callers that still read it. The controller screen does not show it. Hashes are not returned.
 
 ### `POST /api/login`
 
-`{ "name": "Russell", "pin": "1234" }`. Requires same-origin JSON and `X-KartBoard-Request: 1`. Sets the session cookie. Failures are rate limited per IP and per name.
+`{ "code": "k7m2p9qa" }`. The server finds the name. `{ "name": "Controller", "pin": "2468" }` still works for older callers. Requires same-origin JSON and `X-KartBoard-Request: 1`. Sets the session cookie, including the code id and version. Failures are rate limited per IP and per name, or per code when no name is sent.
+
+### Admin, under `/auth/apps/kartboard-admin` or the local server
+
+`GET /api/admin/codes` lists name, created time, last used, and `source` (`managed` or `seed`). `POST /api/admin/codes` with `{ "name": "Controller" }` returns the new code once. `POST /api/admin/codes/revoke` and `POST /api/admin/codes/regenerate` take `{ "name" }`. Hosted calls need a valid Access JWT. Local calls need loopback, or `Authorization: Bearer` when `KARTBOARD_ADMIN_TOKEN` is set. Mutations use the same Origin and `X-KartBoard-Request` checks.
 
 ### `POST /api/logout`
 
@@ -121,14 +129,14 @@ Errors use `{ "error": { "code": "...", "message": "..." } }`. `REVISION_REQUIRE
 
 ## Access
 
-See [ACCESS.md](ACCESS.md). The public board and its read API are unauthenticated. The controller is a PIN plus a signed cookie. Cloudflare Access must bypass `designacle.au/auth/apps/kartboard*` so paddock phones are not sent to the Access login. The Worker does not trust Access headers.
+See [ACCESS.md](ACCESS.md). The public board and its read API are unauthenticated. The controller is a code plus a signed cookie. Cloudflare Access must bypass `designacle.au/auth/apps/kartboard` and `auth/apps/kartboard/*` without swallowing `kartboard-admin`. Admin verifies the Access JWT and fails closed when `ACCESS_AUD` is missing.
 
 ## Known limits
 
 - One practice day and one venue per deployment.
 - Local file persistence assumes a single Node process.
 - The hosted object is the concurrency boundary for the club.
-- PIN login is deliberately small. It is not a substitute for Access on other apps.
+- Controller login is deliberately small. It is not a substitute for Access on admin or on other apps.
 - No audit log beyond `updatedBy` and the local backup file.
 - No offline mutation queue.
 - Client clocks are assumed to be roughly aligned with the server. There is no clock-offset correction.

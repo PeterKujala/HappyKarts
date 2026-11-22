@@ -21,6 +21,8 @@
     "scripts/**/*.mjs",
     "tests/**/*.js",
     "public/**/*.js",
+    "public/**/*.mjs",
+    "tests/**/*.mjs",
     "types/**/*.d.ts"
   ],
   "exclude": ["node_modules", "dist", "worker/assets.generated.mjs"]

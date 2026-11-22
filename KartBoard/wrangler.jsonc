@@ -11,7 +11,8 @@
   "workers_dev": false,
   "preview_urls": false,
   "routes": [
-    { "pattern": "designacle.au/auth/apps/kartboard*", "zone_name": "designacle.au" }
+    { "pattern": "designacle.au/auth/apps/kartboard*", "zone_name": "designacle.au" },
+    { "pattern": "designacle.au/auth/apps/kartboard-admin*", "zone_name": "designacle.au" }
   ],
   // One SQLite-backed Durable Object holds the practice-day state, SSE clients, and sign-in limits.
   // SQLite Durable Objects are available on the Workers Free plan. No separate KV or D1 database.

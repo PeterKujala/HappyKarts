@@ -17,6 +17,7 @@ export function renderRotationEditor(options) {
 
     const handle = document.createElement('div');
     handle.className = 'drag-handle';
+    handle.dataset.help = 'drag-handle';
     handle.textContent = '⠿';
     handle.title = 'Drag to reorder';
     const name = document.createElement('div');
@@ -27,8 +28,8 @@ export function renderRotationEditor(options) {
     if (showMoveButtons) {
       const moves = document.createElement('div');
       moves.className = 'move-tools';
-      const up = button({ text: '↑', className: 'tool-button', label: `Move ${item.name} up` });
-      const down = button({ text: '↓', className: 'tool-button', label: `Move ${item.name} down` });
+      const up = button({ text: '↑', className: 'tool-button', label: `Move ${item.name} up`, help: 'move-up' });
+      const down = button({ text: '↓', className: 'tool-button', label: `Move ${item.name} down`, help: 'move-down' });
       up.disabled = index === 0;
       down.disabled = index === items.length - 1;
       up.addEventListener('click', () => onChange(move(items, index, index - 1)));
@@ -40,12 +41,12 @@ export function renderRotationEditor(options) {
     const tools = document.createElement('div');
     tools.className = 'class-tools';
     if (onEdit) {
-      const edit = button({ text: '✎', className: 'tool-button edit-class', label: `Rename ${item.name}`, title: 'Rename' });
+      const edit = button({ text: '✎', className: 'tool-button edit-class', label: `Rename ${item.name}`, title: 'Rename', help: 'rename-class' });
       edit.addEventListener('click', () => onEdit(item));
       tools.append(edit);
     }
     if (allowDuplicate) {
-      const duplicate = button({ text: '⧉', className: 'tool-button duplicate', label: `Duplicate ${item.name}`, title: 'Duplicate' });
+      const duplicate = button({ text: '⧉', className: 'tool-button duplicate', label: `Duplicate ${item.name}`, title: 'Duplicate', help: 'duplicate-class' });
       duplicate.addEventListener('click', () => {
         const next = copyRotation(items);
         next.splice(index + 1, 0, duplicateClassItem(item));
@@ -53,7 +54,7 @@ export function renderRotationEditor(options) {
       });
       tools.append(duplicate);
     }
-    const remove = button({ text: '×', className: 'tool-button remove', label: `Remove ${item.name}`, title: 'Remove' });
+    const remove = button({ text: '×', className: 'tool-button remove', label: `Remove ${item.name}`, title: 'Remove', help: 'remove-class' });
     remove.addEventListener('click', () => {
       if (items.length === 1) return onMinimumReached?.();
       onChange(items.filter(candidate => candidate.id !== item.id));

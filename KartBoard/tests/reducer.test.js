@@ -54,6 +54,26 @@ test('pause and resume preserve elapsed time', () => {
   assert.equal(state.startedAt, 41_000);
 });
 
+test('advance minute brings a running session forward and stops at zero', () => {
+  let state = reduceState(createDefaultState(0), 'start', {}, 10_000);
+  state = reduceState(state, 'advanceMinute', {}, 10_000);
+  assert.equal(state.startedAt, 10_000 - 60_000);
+  state = reduceState(state, 'addMinute', {}, 10_000);
+  assert.equal(state.startedAt, 10_000);
+  const duration = state.sessionMinutes * 60_000;
+  state = reduceState(state, 'advanceMinute', {}, 10_000 + duration);
+  assert.equal(state.startedAt, 10_000);
+});
+
+test('advance minute shortens a paused session and rejects a day that has not started', () => {
+  let state = reduceState(createDefaultState(0), 'start', {}, 1_000);
+  state = reduceState(state, 'pause', {}, 61_000);
+  const remaining = state.pausedRemainingMs;
+  state = reduceState(state, 'advanceMinute', {}, 61_000);
+  assert.equal(state.pausedRemainingMs, remaining - 60_000);
+  assert.throws(() => reduceState(createDefaultState(0), 'advanceMinute', {}, 1), error => /** @type {{ code?: string }} */ (error).code === 'INVALID_TRANSITION');
+});
+
 test('rejects invalid actions and transitions', () => {
   const state = createDefaultState(0);
   assert.throws(() => reduceState(state, 'not-real', {}, 1), error => /** @type {{ code?: string }} */ (error).code === 'UNKNOWN_ACTION');

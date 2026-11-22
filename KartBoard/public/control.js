@@ -3,9 +3,12 @@ import { $, $$, button, setText } from './js/dom.js';
 import { copyRotation, createClassItem, formatClock, remainingMs, rotationItems, scheduleNames, statusCopy } from './js/selectors.js';
 import { renderRotationEditor } from './js/rotation-editor.js';
 import { showToast } from './js/toast.js';
-import { createPinGate } from './js/pin-gate.js';
+import { createCodeGate } from './js/pin-gate.js';
+import { createGuardedFetch, createShowMe } from './js/show-me.mjs';
 
-const api = new KartBoardApi();
+const showMe = createShowMe(document);
+const api = new KartBoardApi(createGuardedFetch(() => showMe.active));
+let signedIn = false;
 const COMMON_CLASSES = Object.freeze(['Cadet P', 'Cadet', 'Junior P', 'Junior', 'Senior Restricted', 'Senior Open', '4SS', 'TaG 125']);
 let state;
 let liveDraft = [];
@@ -15,16 +18,36 @@ let setupDraft = [];
 let setupBaseRevision = 0;
 let editingSetupId = null;
 
-const pinGate = createPinGate($('#pinGate'), { onSubmit: submitPin });
+const codeGate = createCodeGate($('#pinGate'), { onSubmit: submitCode });
+showMe.onToggle = active => {
+  if (active) codeGate.close();
+  else if (!signedIn) codeGate.open();
+  if (state) render(state);
+  syncLogout();
+};
+showMe.restore();
+if (showMe.active) codeGate.close();
 initialize();
 
 async function initialize() {
+  let session = { authenticated: false, user: '' };
+  try { session = await api.session(); }
+  catch (error) {
+    if (!showMe.active) {
+      showToast(error.message);
+      document.body.classList.add('disconnected');
+      return;
+    }
+  }
+  if (showMe.active) {
+    codeGate.close();
+    if (session.authenticated) showSignedIn(session.user);
+    else syncLogout();
+  } else if (!session.authenticated) {
+    const ok = await showCodeGate();
+    if (!ok) return;
+  } else showSignedIn(session.user);
   try {
-    const session = await api.session();
-    if (!session.authenticated) {
-      const signedIn = await showPinGate(session.users);
-      if (!signedIn) return;
-    } else showSignedIn(session.user);
     await api.verifyCompatibility();
     render(await api.getState());
     api.subscribe({ onState: render, onConnectionChange: connected => document.body.classList.toggle('disconnected', !connected) });
@@ -34,19 +57,19 @@ async function initialize() {
   }
 }
 
-function showPinGate(users) {
+function showCodeGate() {
   return new Promise(resolve => {
-    pinGate.pending = resolve;
-    pinGate.open(users || []);
+    codeGate.pending = resolve;
+    codeGate.open();
   });
 }
 
-async function submitPin(name, pin) {
+async function submitCode(code) {
   try {
-    const result = await api.login(name, pin);
-    pinGate.close();
+    const result = await api.login(code);
+    codeGate.close();
     showSignedIn(result.user);
-    pinGate.pending?.(true);
+    codeGate.pending?.(true);
     return '';
   } catch (error) {
     return error.message;
@@ -54,13 +77,18 @@ async function submitPin(name, pin) {
 }
 
 function showSignedIn(user) {
-  $('#logout').hidden = false;
-  if (user) setText('#actor', user);
+  signedIn = true;
+  syncLogout();
+  if (user) setText('#actor', `Signed in as ${user}`);
+}
+
+function syncLogout() {
+  $('#logout').hidden = !(signedIn || showMe.active);
 }
 
 function render(nextState) {
   state = nextState;
-  if (state.updatedBy) setText('#actor', state.updatedBy);
+  syncLogout();
   const schedule = scheduleNames(state);
   const copy = statusCopy(state);
   setText('#venue', state.venue); setText('#dayLabel', state.dayLabel);
@@ -68,10 +96,13 @@ function render(nextState) {
   if (document.activeElement !== $('#noticeInput')) $('#noticeInput').value = state.notice;
   const labels = { ready: 'Start first session', running: 'Start next session', paused: 'Resume session', changeover: 'Start next session', break: 'Resume with current class', finished: 'Start a new day' };
   setText('#mainActionLabel', labels[state.status] || 'Start next session');
+  const learn = showMe.active;
+  const timingLocked = !learn && !['running', 'paused'].includes(state.status);
   $('#pause').textContent = state.status === 'paused' ? 'Resume' : 'Pause';
-  $('#pause').disabled = !['running', 'paused'].includes(state.status);
-  $('[data-action="addMinute"]').disabled = !['running', 'paused'].includes(state.status);
-  $('#edit').disabled = !['ready', 'finished'].includes(state.status);
+  $('#pause').disabled = timingLocked;
+  $('[data-action="addMinute"]').disabled = timingLocked;
+  $('[data-action="advanceMinute"]').disabled = timingLocked;
+  $('#edit').disabled = !learn && !['ready', 'finished'].includes(state.status);
   if (!liveEditing) renderLockedRotation();
   tick();
 }
@@ -85,6 +116,7 @@ setInterval(tick, 250);
  * @param {{ expectedRevision?: number, successMessage?: string }} [options]
  */
 async function dispatch(action, payload, options = {}) {
+  if (showMe.active) return false;
   const { expectedRevision, successMessage = 'Updated' } = options;
   const revision = Number.isInteger(expectedRevision) ? expectedRevision : state?.revision;
   try {
@@ -100,8 +132,10 @@ async function dispatch(action, payload, options = {}) {
     }
     if (error.code === 'AUTH_REQUIRED') {
       showToast(error.message);
-      const session = await api.session().catch(() => ({ users: [] }));
-      await showPinGate(session.users);
+      signedIn = false;
+      setText('#actor', '');
+      syncLogout();
+      await showCodeGate();
       return false;
     }
     showToast(error.message);
@@ -126,7 +160,8 @@ function renderLockedRotation() {
     tile.dataset.itemId = item.id;
     const number = document.createElement('span'); number.className = 'rotation-number'; number.textContent = String(index + 1).padStart(2, '0');
     const name = document.createElement('span'); name.textContent = item.name;
-    const edit = button({ text: '⠿', className: 'rotation-edit-trigger', label: 'Change running order', title: 'Change running order' });
+    tile.dataset.help = 'running-order';
+    const edit = button({ text: '⠿', className: 'rotation-edit-trigger', label: 'Change running order', title: 'Change running order', help: 'running-order-edit' });
     edit.addEventListener('click', event => { event.stopPropagation(); enterLiveEdit(); });
     tile.append(number, name, edit);
     bindLongPress(tile);
@@ -214,7 +249,7 @@ function renderClassChoices(container, activeItems, onAdd) {
     container.replaceChildren(message); return;
   }
   container.replaceChildren(...available.map(name => {
-    const add = button({ text: `+ ${name}`, className: 'class-chip' });
+    const add = button({ text: `+ ${name}`, className: 'class-chip', help: 'add-class' });
     add.addEventListener('click', () => onAdd(createClassItem(name)));
     return add;
   }));
@@ -260,6 +295,10 @@ $('#mainAction').addEventListener('click', () => {
 $('#pause').addEventListener('click', () => dispatch(state.status === 'paused' ? 'resume' : 'pause'));
 $$('[data-action]').forEach(control => control.addEventListener('click', () => dispatch(control.dataset.action)));
 $('#openBoard').addEventListener('click', () => window.open('board.html', 'kartboard_public', 'popup,width=1280,height=780'));
-$('#logout').addEventListener('click', async () => { await api.logout(); location.reload(); });
+$('#logout').addEventListener('click', async () => {
+  if (showMe.active) return;
+  await api.logout();
+  location.reload();
+});
 $('#refreshBoard').addEventListener('click', refreshAfterConflict);
 $('#noticeForm').addEventListener('submit', event => { event.preventDefault(); dispatch('notice', { notice: $('#noticeInput').value }); });

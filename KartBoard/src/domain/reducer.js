@@ -3,7 +3,7 @@ const { STATUSES, createDefaultState, requireRotation, getUpcoming, remainingMs 
 
 const ACTIONS = Object.freeze({
   CONFIGURE: 'configure', UPDATE_ROTATION: 'updateRotation', START: 'start', NEXT: 'next', PREVIOUS: 'previous',
-  PAUSE: 'pause', RESUME: 'resume', ADD_MINUTE: 'addMinute', CHANGEOVER: 'changeover', BREAK: 'break',
+  PAUSE: 'pause', RESUME: 'resume', ADD_MINUTE: 'addMinute', ADVANCE_MINUTE: 'advanceMinute', CHANGEOVER: 'changeover', BREAK: 'break',
   FINISH: 'finish', NOTICE: 'notice', RESET: 'reset'
 });
 const ACTION_NAMES = Object.freeze(Object.values(ACTIONS));
@@ -19,6 +19,7 @@ function reduceState(state, action, payload = {}, now = Date.now()) {
     case ACTIONS.PAUSE: next = pause(state, now); break;
     case ACTIONS.RESUME: next = resume(state, now); break;
     case ACTIONS.ADD_MINUTE: next = addMinute(state); break;
+    case ACTIONS.ADVANCE_MINUTE: next = advanceMinute(state, now); break;
     case ACTIONS.CHANGEOVER: next = { ...state, status: STATUSES.CHANGEOVER, startedAt: null, pausedRemainingMs: null }; break;
     case ACTIONS.BREAK: next = { ...state, status: STATUSES.BREAK, startedAt: null, pausedRemainingMs: null }; break;
     case ACTIONS.FINISH: next = { ...state, status: STATUSES.FINISHED, startedAt: null, pausedRemainingMs: null }; break;
@@ -85,6 +86,20 @@ function addMinute(state) {
   if (state.status === STATUSES.PAUSED) return { ...state, pausedRemainingMs: (state.pausedRemainingMs ?? 0) + 60_000 };
   if (state.status === STATUSES.RUNNING) return { ...state, startedAt: state.startedAt + 60_000 };
   throw new DomainError('INVALID_TRANSITION', 'Start a session before adding time.');
+}
+
+// The current session is the only clock. +1 minute moves startedAt later (more time left).
+// Advance uses the same fields with the opposite sign so the session ends one minute sooner.
+// Remaining time stops at zero; it does not borrow time from the next class.
+function advanceMinute(state, now) {
+  if (state.status === STATUSES.PAUSED) {
+    return { ...state, pausedRemainingMs: Math.max(0, (state.pausedRemainingMs ?? 0) - 60_000) };
+  }
+  if (state.status === STATUSES.RUNNING) {
+    const earliest = now - state.sessionMinutes * 60_000;
+    return { ...state, startedAt: Math.max(earliest, state.startedAt - 60_000) };
+  }
+  throw new DomainError('INVALID_TRANSITION', 'Start a session before advancing the time.');
 }
 
 function requireExistingRotation(state) { if (!state.rotation.length) throw new DomainError('EMPTY_ROTATION', 'The running order is empty.'); }

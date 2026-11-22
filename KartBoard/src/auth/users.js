@@ -9,16 +9,8 @@ const PIN_PATTERN = /^[0-9]{4,8}$/;
  * @param {string} pin
  * @param {{ salt?: Uint8Array, iterations?: number, name?: string }} [options]
  */
-async function hashPin(pin, options = {}) {
-  const iterations = normalizeIterations(options.iterations) || DEFAULT_ITERATIONS;
-  const salt = options.salt || crypto.getRandomValues(new Uint8Array(16));
-  const bits = await pbkdf2(pin, salt, iterations);
-  return {
-    name: typeof options.name === 'string' ? options.name.trim() : '',
-    salt: bytesToBase64(salt),
-    hash: bytesToBase64(bits),
-    iterations
-  };
+function hashPin(pin, options = {}) {
+  return hashSecret(pin, options);
 }
 
 function normalizeIterations(value) {
@@ -27,10 +19,39 @@ function normalizeIterations(value) {
   return iterations;
 }
 
-function pbkdf2(pin, salt, iterations) {
-  return crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']).then(key => (
+function pbkdf2(secret, salt, iterations) {
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(secret), 'PBKDF2', false, ['deriveBits']).then(key => (
     crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, 256).then(bits => new Uint8Array(bits))
   ));
+}
+
+/**
+ * @param {string} secret
+ * @param {{ salt?: Uint8Array, iterations?: number, name?: string }} [options]
+ */
+async function hashSecret(secret, options = {}) {
+  const iterations = normalizeIterations(options.iterations) || DEFAULT_ITERATIONS;
+  const salt = options.salt || crypto.getRandomValues(new Uint8Array(16));
+  const bits = await pbkdf2(secret, salt, iterations);
+  return {
+    name: typeof options.name === 'string' ? options.name.trim() : '',
+    salt: bytesToBase64(salt),
+    hash: bytesToBase64(bits),
+    iterations
+  };
+}
+
+/**
+ * Always runs PBKDF2, including when `user` is missing, so a lookup miss is not faster.
+ * @param {string} secret
+ * @param {{ salt?: string, hash?: string, iterations?: number } | null | undefined} user
+ */
+async function verifySecret(secret, user) {
+  const iterations = user?.iterations || DEFAULT_ITERATIONS;
+  const salt = user?.salt ? base64ToBytes(user.salt) : new Uint8Array(16);
+  const actual = await pbkdf2(String(secret ?? ''), salt, iterations);
+  if (!user || typeof user.hash !== 'string') return false;
+  return timingSafeEqual(actual, base64ToBytes(user.hash));
 }
 
 class UserRegistry {
@@ -62,11 +83,9 @@ class UserRegistry {
    */
   async authenticate(name, pin) {
     const user = this.users.find(item => item.name === name);
-    const iterations = user?.iterations || this.users[0]?.iterations || DEFAULT_ITERATIONS;
-    const salt = user ? base64ToBytes(user.salt) : new Uint8Array(16);
-    const actual = await pbkdf2(String(pin), salt, iterations);
+    const matches = await verifySecret(pin, user);
     if (!user || !PIN_PATTERN.test(pin)) return null;
-    return timingSafeEqual(actual, base64ToBytes(user.hash)) ? user.name : null;
+    return matches ? user.name : null;
   }
 }
 
@@ -87,4 +106,6 @@ function assertName(name) {
   return clean;
 }
 
-module.exports = { DEFAULT_ITERATIONS, PIN_PATTERN, hashPin, UserRegistry, assertPin, assertName };
+module.exports = {
+  DEFAULT_ITERATIONS, PIN_PATTERN, hashPin, hashSecret, verifySecret, normalizeIterations, UserRegistry, assertPin, assertName
+};
