@@ -142,7 +142,8 @@ body.show-me .control-wrap { outline: 4px solid var(--lime); outline-offset: 6px
 .admin-card { padding: 22px; margin-top: 16px; }
 .admin-form, .code-row { display: flex; gap: 8px; align-items: center; }
 .admin-form input, .token-row input, .reveal-code { flex: 1; min-width: 0; min-height: 48px; border: 1px solid var(--line); border-radius: 12px; padding: 0 12px; }
-.reveal-code { font: 800 22px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; }
+.reveal-code { font: 800 18px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; width: 9.5em; }
+.code-table .code-row { flex-wrap: wrap; }
 .code-table { width: 100%; border-collapse: collapse; }
 .code-table th, .code-table td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .code-actions { display: flex; gap: 6px; flex-wrap: wrap; }

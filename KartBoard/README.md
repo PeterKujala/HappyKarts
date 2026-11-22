@@ -13,7 +13,7 @@ A local server is still available for a paddock with no internet. See [Local net
 
 ## Controller access
 
-Create codes on the admin page. Hosted, that page is https://designacle.au/auth/apps/kartboard-admin/admin.html and it requires the existing Cloudflare Access login. The code is shown once. Lists after that show the name, when it was created, and when it was last used.
+Create codes on the admin page. Hosted, that page is https://designacle.au/auth/apps/kartboard-admin/admin.html and it requires the existing Cloudflare Access login. The list shows each code beside its name. The stored hash is still what sign-in checks. A separate AES-GCM copy lets the admin read the code again.
 
 `KARTBOARD_USERS` is still a seed. A name in the Durable Object replaces the seed with the same name. The existing Controller seed keeps working until then.
 

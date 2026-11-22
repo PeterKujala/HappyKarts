@@ -11,7 +11,7 @@ import { CredentialBook } from '../src/auth/codes.js';
 export class KartBoardRoom {
   /**
    * @param {{ storage: { get: (key: string) => Promise<unknown>, put: (key: string, value: unknown) => Promise<void> }, blockConcurrencyWhile?: (fn: () => Promise<void>) => Promise<void> }} ctx
-   * @param {{ KARTBOARD_USERS?: string, KARTBOARD_SESSION_SECRET?: string, ACCESS_AUD?: string, ACCESS_TEAM_DOMAIN?: string, ADMIN_EMAILS?: string, __fetchCerts?: Function, __accessNow?: number }} env
+   * @param {{ KARTBOARD_USERS?: string, KARTBOARD_SESSION_SECRET?: string, KARTBOARD_CODE_KEY?: string, ACCESS_AUD?: string, ACCESS_TEAM_DOMAIN?: string, ADMIN_EMAILS?: string, __fetchCerts?: Function, __accessNow?: number }} env
    */
   constructor(ctx, env) {
     this.ctx = ctx;
@@ -21,7 +21,9 @@ export class KartBoardRoom {
     this.users = UserRegistry.fromJson(this.env.KARTBOARD_USERS || '{"users":[]}');
     this.codes = new CredentialBook({
       seeds: this.users,
-      store: new DurableAccessCodeStore(ctx.storage)
+      store: new DurableAccessCodeStore(ctx.storage),
+      codeKey: this.env.KARTBOARD_CODE_KEY || '',
+      sessionSecret: this.env.KARTBOARD_SESSION_SECRET || ''
     });
     this.board = new BoardCoordinator({
       repository: new DurableStateRepository(ctx.storage),

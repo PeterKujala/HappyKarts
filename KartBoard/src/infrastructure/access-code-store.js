@@ -14,6 +14,9 @@ function normalizeRecord(record) {
   const version = Number(record?.version);
   if (!name || name.length > 40 || !iterations || !Number.isInteger(version) || version < 1) return null;
   if (typeof record.id !== 'string' || !record.id || typeof record.salt !== 'string' || typeof record.hash !== 'string') return null;
+  const sealed = typeof record.codeIv === 'string' && record.codeIv && typeof record.codeCipher === 'string' && record.codeCipher
+    ? { codeIv: record.codeIv, codeCipher: record.codeCipher }
+    : {};
   return {
     id: record.id,
     name,
@@ -22,7 +25,8 @@ function normalizeRecord(record) {
     iterations,
     version,
     createdAt: typeof record.createdAt === 'number' ? record.createdAt : 0,
-    lastUsedAt: typeof record.lastUsedAt === 'number' ? record.lastUsedAt : null
+    lastUsedAt: typeof record.lastUsedAt === 'number' ? record.lastUsedAt : null,
+    ...sealed
   };
 }
 

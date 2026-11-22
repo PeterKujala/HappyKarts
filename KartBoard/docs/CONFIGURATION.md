@@ -27,6 +27,9 @@ printf %s "PASTE_AUD_TAG" | npx wrangler secret put ACCESS_AUD
 # Optional. Comma-separated. Leave unset to allow every email that Access already allowed.
 # An invalid value fails closed.
 printf %s "peter@example.com" | npx wrangler secret put ADMIN_EMAILS
+
+# Optional. When unset, codes are sealed with a key derived from KARTBOARD_SESSION_SECRET.
+printf %s "$(node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))")" | npx wrangler secret put KARTBOARD_CODE_KEY
 ```
 
 `ACCESS_AUD` may be a secret or a var. The team domain is `designacle.cloudflareaccess.com`. `ADMIN_EMAILS` is optional; a dashboard variable and a secret both appear as `env.ADMIN_EMAILS`.
@@ -44,7 +47,11 @@ node scripts/manage-users.mjs export | npx wrangler secret put KARTBOARD_USERS
 { "users": [{ "name": "Controller", "salt": "...", "hash": "...", "iterations": 100000 }] }
 ```
 
-The normal way to add a controller is the admin page, which generates an 8-character code from `abcdefghijkmnpqrstuvwxyz23456789` (no `0`, `o`, `1`, or `l`). The seed file is still how a numeric code is installed before the first deploy. Changing a seed means `remove`, `add`, then `secret put` again. Admin revoke and regenerate do not edit the secret. Deleting an admin code for a name lets the seed for that name work again.
+The normal way to add a controller is the admin page, which generates an 8-character code from `abcdefghijkmnpqrstuvwxyz23456789` (no `0`, `o`, `1`, or `l`). The admin list shows that code again. It is sealed at rest with AES-GCM. The PBKDF2 hash is still what sign-in checks.
+
+`KARTBOARD_CODE_KEY` is the preferred sealing secret. HKDF-SHA-256 uses salt `kartboard-access-code` and info `kartboard.code-key.v1`. If `KARTBOARD_CODE_KEY` is unset, the same HKDF uses `KARTBOARD_SESSION_SECRET` with the different info label `kartboard.session-secret.code.v1`, so the session secret is not used as a raw AES key. Setting `KARTBOARD_CODE_KEY` later does not decrypt codes sealed with the session secret; those rows say **Hidden — regenerate to view** until you generate a new code. The same text is shown for codes stored before sealing existed and for names that only exist in `KARTBOARD_USERS`.
+
+The seed file is still how a numeric code is installed before the first deploy. Changing a seed means `remove`, `add`, then `secret put` again. Admin revoke and regenerate do not edit the secret. Deleting an admin code for a name lets the seed for that name work again.
 
 Sessions store the code id and version. Revoke and regenerate invalidate cookies for that code. Changing only the seed does not invalidate cookies already issued for that seed name; rotating `KARTBOARD_SESSION_SECRET` does.
 
@@ -60,7 +67,8 @@ Sessions store the code id and version. Revoke and regenerate invalidate cookies
 | `KARTBOARD_USERS_FILE` | `kartboard-users.json` |
 | `KARTBOARD_USERS` | optional JSON override of the user file |
 | `KARTBOARD_ACCESS_CODES_FILE` | `kartboard-access-codes.json` |
-| `KARTBOARD_SESSION_SECRET` | optional. Otherwise `kartboard-session.secret` is created on first start. |
+| `KARTBOARD_SESSION_SECRET` | optional. Otherwise `kartboard-session.secret` is created on first start. Also used to seal access codes when `KARTBOARD_CODE_KEY` is unset. |
+| `KARTBOARD_CODE_KEY` | optional. When set, access codes are sealed with this secret instead of the session secret. |
 | `KARTBOARD_SESSION_SECRET_FILE` | `kartboard-session.secret` |
 | `KARTBOARD_ADMIN_TOKEN` | empty. Loopback-only admin. When set, admin requires `Authorization: Bearer` from every client. |
 | `KARTBOARD_PIN` | used only by `scripts/manage-users.mjs`, never stored |

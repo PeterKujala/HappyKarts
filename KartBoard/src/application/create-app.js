@@ -20,7 +20,13 @@ function createKartBoardApp(options = {}) {
       ? new FileAccessCodeStore(options.accessCodesFile, { logger: options.logger })
       : new MemoryAccessCodeStore()
   );
-  const codes = options.codes || new CredentialBook({ seeds: users, store: accessCodes, iterations: options.codeIterations });
+  const codes = options.codes || new CredentialBook({
+    seeds: users,
+    store: accessCodes,
+    iterations: options.codeIterations,
+    codeKey: options.codeKey || '',
+    sessionSecret: options.sessionSecret || ''
+  });
   const ctx = {
     basePath: options.basePath || '',
     adminBasePath: options.adminBasePath === undefined ? (options.basePath || '') : options.adminBasePath,
