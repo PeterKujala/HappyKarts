@@ -106,6 +106,21 @@ button:disabled { cursor: not-allowed; opacity: .45; transform: none !important;
 .toast { opacity: 0; pointer-events: none; position: fixed; left: 50%; bottom: 25px; transform: translate(-50%,12px); background: var(--ink); color: white; padding: 11px 16px; border-radius: 10px; font-size: 13px; transition: .2s; }
 .toast.show { opacity: 1; transform: translate(-50%,0); }
 .toast-action { margin-left: 14px; border: 0; background: transparent; color: var(--lime); font-weight: 850; cursor: pointer; }
+.conflict-banner { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin: -8px 0 16px; padding: 12px 14px; border-radius: 14px; background: #fff0e9; color: #923719; }
+.conflict-banner[hidden] { display: none; }
+.conflict-banner p { margin: 0; font-size: 14px; font-weight: 700; }
+.pin-gate { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 18px; background: rgba(8, 27, 19, .62); }
+.pin-gate[hidden] { display: none; }
+.pin-card { width: min(420px, 100%); background: white; border-radius: 22px; padding: 22px; box-shadow: var(--shadow); }
+.pin-card h2 { margin: 8px 0 0; font-size: 28px; letter-spacing: -.04em; }
+.pin-help { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.pin-names { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.pin-names button[aria-pressed="true"] { color: white; background: var(--green); }
+.pin-dots { min-height: 36px; margin-top: 14px; text-align: center; letter-spacing: .35em; font-size: 22px; font-weight: 800; }
+.pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.pin-pad button { min-height: 56px; font-size: 20px; }
+.pin-error { min-height: 1.2em; margin: 10px 0 0; color: #a43d20; font-size: 13px; font-weight: 700; }
+.pin-submit { width: 100%; margin-top: 8px; }
 
 dialog { width: min(620px,calc(100vw - 32px)); max-height: calc(100vh - 32px); border: 0; border-radius: 22px; padding: 0; box-shadow: var(--shadow); overflow: auto; }
 dialog::backdrop { background: rgba(8,27,19,.54); backdrop-filter: blur(3px); }

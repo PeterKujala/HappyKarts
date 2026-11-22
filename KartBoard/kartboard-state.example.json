@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "revision": 0,
+  "venue": "Ipswich Kart Club",
+  "dayLabel": "Saturday Practice",
+  "sessionMinutes": 9,
+  "rotation": [
+    { "id": "default-1", "name": "Cadet P" },
+    { "id": "default-2", "name": "Cadet" },
+    { "id": "default-3", "name": "Junior P" },
+    { "id": "default-4", "name": "Junior" },
+    { "id": "default-5", "name": "Senior Restricted" },
+    { "id": "default-6", "name": "Senior Open" }
+  ],
+  "currentClass": { "id": "default-1", "name": "Cadet P" },
+  "nextIndex": 1,
+  "status": "ready",
+  "startedAt": null,
+  "pausedRemainingMs": null,
+  "notice": "",
+  "updatedAt": 0,
+  "updatedBy": ""
+}

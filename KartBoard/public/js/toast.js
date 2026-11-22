@@ -2,23 +2,29 @@ import { $ } from './dom.js';
 
 let timer;
 
-export function showToast(message, { undo } = {}) {
+/**
+ * @param {string} message
+ * @param {{ undo?: () => void, action?: () => void, actionLabel?: string }} [options]
+ */
+export function showToast(message, options = {}) {
+  const { undo, action, actionLabel } = options;
   const toast = $('#toast');
   toast.replaceChildren();
   const label = document.createElement('span');
   label.textContent = message;
   toast.append(label);
-  if (undo) {
-    const action = document.createElement('button');
-    action.type = 'button';
-    action.className = 'toast-action';
-    action.textContent = 'Undo';
-    action.addEventListener('click', () => { undo(); hideToast(); });
-    toast.append(action);
+  const run = action || undo;
+  if (run) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'toast-action';
+    button.textContent = actionLabel || 'Undo';
+    button.addEventListener('click', () => { run(); hideToast(); });
+    toast.append(button);
   }
   toast.classList.add('show');
   clearTimeout(timer);
-  timer = setTimeout(hideToast, undo ? 3200 : 2200);
+  timer = setTimeout(hideToast, run ? 5000 : 2200);
 }
 
 function hideToast() { $('#toast')?.classList.remove('show'); }

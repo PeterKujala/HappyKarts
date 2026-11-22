@@ -3,6 +3,7 @@ import { $, $$, button, setText } from './js/dom.js';
 import { copyRotation, createClassItem, formatClock, remainingMs, rotationItems, scheduleNames, statusCopy } from './js/selectors.js';
 import { renderRotationEditor } from './js/rotation-editor.js';
 import { showToast } from './js/toast.js';
+import { createPinGate } from './js/pin-gate.js';
 
 const api = new KartBoardApi();
 const COMMON_CLASSES = Object.freeze(['Cadet P', 'Cadet', 'Junior P', 'Junior', 'Senior Restricted', 'Senior Open', '4SS', 'TaG 125']);
@@ -14,10 +15,16 @@ let setupDraft = [];
 let setupBaseRevision = 0;
 let editingSetupId = null;
 
+const pinGate = createPinGate($('#pinGate'), { onSubmit: submitPin });
 initialize();
 
 async function initialize() {
   try {
+    const session = await api.session();
+    if (!session.authenticated) {
+      const signedIn = await showPinGate(session.users);
+      if (!signedIn) return;
+    } else showSignedIn(session.user);
     await api.verifyCompatibility();
     render(await api.getState());
     api.subscribe({ onState: render, onConnectionChange: connected => document.body.classList.toggle('disconnected', !connected) });
@@ -27,8 +34,33 @@ async function initialize() {
   }
 }
 
+function showPinGate(users) {
+  return new Promise(resolve => {
+    pinGate.pending = resolve;
+    pinGate.open(users || []);
+  });
+}
+
+async function submitPin(name, pin) {
+  try {
+    const result = await api.login(name, pin);
+    pinGate.close();
+    showSignedIn(result.user);
+    pinGate.pending?.(true);
+    return '';
+  } catch (error) {
+    return error.message;
+  }
+}
+
+function showSignedIn(user) {
+  $('#logout').hidden = false;
+  if (user) setText('#actor', user);
+}
+
 function render(nextState) {
   state = nextState;
+  if (state.updatedBy) setText('#actor', state.updatedBy);
   const schedule = scheduleNames(state);
   const copy = statusCopy(state);
   setText('#venue', state.venue); setText('#dayLabel', state.dayLabel);
@@ -47,16 +79,42 @@ function render(nextState) {
 function tick() { if (state) setText('#timer', formatClock(remainingMs(state))); }
 setInterval(tick, 250);
 
-async function dispatch(action, payload, { expectedRevision, successMessage = 'Updated' } = {}) {
+/**
+ * @param {string} action
+ * @param {object} [payload]
+ * @param {{ expectedRevision?: number, successMessage?: string }} [options]
+ */
+async function dispatch(action, payload, options = {}) {
+  const { expectedRevision, successMessage = 'Updated' } = options;
+  const revision = Number.isInteger(expectedRevision) ? expectedRevision : state?.revision;
   try {
-    const next = await api.dispatch(action, payload, { expectedRevision });
+    const next = await api.dispatch(action, payload, { expectedRevision: revision });
+    $('#conflict').hidden = true;
     render(next);
     if (successMessage) showToast(successMessage);
     return true;
   } catch (error) {
-    showToast(error.code === 'REVISION_CONFLICT' ? 'Another controller changed KartBoard. Cancel and reopen editing.' : error.message);
+    if (error.code === 'REVISION_CONFLICT') {
+      await refreshAfterConflict();
+      return false;
+    }
+    if (error.code === 'AUTH_REQUIRED') {
+      showToast(error.message);
+      const session = await api.session().catch(() => ({ users: [] }));
+      await showPinGate(session.users);
+      return false;
+    }
+    showToast(error.message);
     return false;
   }
+}
+
+async function refreshAfterConflict() {
+  if (liveEditing) closeLiveEdit();
+  if ($('#setup').open) $('#setup').close();
+  render(await api.getState());
+  $('#conflict').hidden = false;
+  showToast('Another controller changed KartBoard. The board was refreshed.', { actionLabel: 'Refresh', action: refreshAfterConflict });
 }
 
 function renderLockedRotation() {
@@ -201,5 +259,7 @@ $('#mainAction').addEventListener('click', () => {
 });
 $('#pause').addEventListener('click', () => dispatch(state.status === 'paused' ? 'resume' : 'pause'));
 $$('[data-action]').forEach(control => control.addEventListener('click', () => dispatch(control.dataset.action)));
-$('#openBoard').addEventListener('click', () => window.open('/board.html', 'kartboard_public', 'popup,width=1280,height=780'));
+$('#openBoard').addEventListener('click', () => window.open('board.html', 'kartboard_public', 'popup,width=1280,height=780'));
+$('#logout').addEventListener('click', async () => { await api.logout(); location.reload(); });
+$('#refreshBoard').addEventListener('click', refreshAfterConflict);
 $('#noticeForm').addEventListener('submit', event => { event.preventDefault(); dispatch('notice', { notice: $('#noticeInput').value }); });

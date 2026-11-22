@@ -2,7 +2,7 @@
 
 KartBoard is a local-first, real-time practice-session communication board for kart clubs. One authorised practice-day controller—the role called the **KAC** throughout this project—updates the session flow, while view-only public boards on phones, tablets, laptops, or larger displays immediately show who is on track, who is next, who follows, and approximately how much session time remains.
 
-This document was last reconciled with the project files on 28 August 2026. The current package version is `0.2.0`. Status labels have precise meanings:
+This document was last reconciled with the project files on 22 November 2026. The current package version is `0.3.0`. Status labels have precise meanings:
 
 - **IMPLEMENTED** — demonstrably exists in the current project.
 - **DECIDED** — agreed product or design direction, whether or not it is fully implemented.
@@ -26,16 +26,19 @@ This document was last reconciled with the project files on 28 August 2026. The 
 
 | Area | Status | Current position |
 | --- | --- | --- |
-| Communication-only MVP | **IMPLEMENTED** | Controller and public board run from one local Node.js server. |
+| Communication-only MVP | **IMPLEMENTED** | Controller and public board. Hosted at `/auth/apps/kartboard` and still runnable as a local Node server. |
 | KAC controller | **IMPLEMENTED** | Pre-practice setup, one-tap session advancement, quick controls, notices, and live running-order editing. |
 | Public display | **IMPLEMENTED** | Responsive, view-only board with live updates and reconnect behavior. |
-| Persistence and recovery | **IMPLEMENTED** | JSON state, schema migration, stable IDs, temporary writes, and one backup. |
-| Local network access | **IMPLEMENTED** | Server listens on the local network; modern browsers can connect by URL. |
-| Static QR access cards | **IMPLEMENTED** | Public, KAC, and combined QR images exist, but encode the network address used when they were made. |
-| Automatic QR generation | **PROPOSED** | The running application does not currently generate or refresh QR codes. |
+| Persistence and recovery | **IMPLEMENTED** | Local JSON file with backup. Hosted state is one SQLite Durable Object. Both use the same migration and revision rules. |
+| Local network access | **IMPLEMENTED** | `npm start` still listens on the LAN. The hosted URLs are the ones to publish. |
+| Static QR access cards | **IMPLEMENTED** | QR images encode `https://designacle.au/auth/apps/kartboard/board.html` and `control.html`. `npm run qr` regenerates them. |
+| Automatic QR generation | **IMPLEMENTED** | `scripts/generate-qr.mjs`. The running server does not draw QR codes itself. |
 | One-day Ipswich trial | **DECIDED** | Preferred next validation step; not recorded as completed. |
-| Hosted/shared deployment | **PROPOSED** | Discussed in principle; no provider or production design has been selected. |
-| Authentication, TLS, tenancy, audit | **PROPOSED** | Required before use on a shared or untrusted hosted network. |
+| Hosted deployment | **IMPLEMENTED** | Cloudflare Worker `kartboard` on `designacle.au/auth/apps/kartboard*`. Not deployed by this repository. See `docs/DEPLOYMENT.md`. |
+| Authentication | **IMPLEMENTED** | Public board is open. Controller requires a registered PIN and a signed cookie. See `docs/ACCESS.md`. |
+| TLS | **IMPLEMENTED** | HTTPS on the hosted site. Local LAN remains HTTP, with the session cookie not marked Secure. |
+| Tenancy | **PROPOSED** | Still one venue and one practice day. |
+| Audit | **IMPLEMENTED** | `updatedBy` records the controller name on each accepted change. There is no separate event log. |
 | Telemetry or steering-wheel display | **PROPOSED** | Part of the original broad idea, deliberately excluded from the current MVP. |
 | Multi-club/multi-event service | **PROPOSED** | Current server represents one venue/practice day only. |
 
@@ -213,19 +216,25 @@ The public board uses oversized current-class and timer typography, with next an
 - **IMPLEMENTED:** the previous `Done` action bug, which surfaced as an `Unknown action` message, has been corrected by sending the supported `updateRotation` action.
 - **IMPLEMENTED:** the stale visible running-order issue after saving has been corrected; accepted server state is rendered back into the dashboard.
 
+## Hosted release 0.3.0
+
+**IMPLEMENTED:** KartBoard is prepared for `https://designacle.au/auth/apps/kartboard/board.html` (public, no login) and `https://designacle.au/auth/apps/kartboard/control.html` (PIN). Cloudflare Access on `/auth/apps/*` would block the public board, so Peter must add a more specific Bypass/Everyone application for `auth/apps/kartboard*` before or as the Worker is deployed. The Worker does not verify an Access JWT.
+
+The Durable Object `KartBoardRoom` stores state, fans out SSE, and rate-limits PIN attempts. Local `kartboard-state.json` remains the LAN store and is gitignored. `kartboard-state.example.json` is the sample. Controller registration is `node scripts/manage-users.mjs`. Deployment steps are in `docs/DEPLOYMENT.md`. Another agent should read that file, `docs/ACCESS.md`, `docs/CONFIGURATION.md`, and `docs/ARCHITECTURE.md` before changing hosting.
+
+The feature walkthrough video is stored with Git LFS from this version forward. Older commits still contain the blob. Do not rewrite history to move it.
+
 ## Current Architecture
 
 ### Runtime topology
 
 ```text
-KAC browser -- POST actions ----┐
-                               |
-Public boards -- SSE state -----+--> Local Node.js server --> JSON state repository
-                               |                           |-- primary state
-Any browser -- GET state -------┘                           `-- backup/temp files
+Public board -- GET/SSE --------┐
+                                |
+KAC browser -- PIN + POST ------+--> Node (LAN file) or Worker + Durable Object
 ```
 
-The Node.js server is the sole authority. Clients receive complete state snapshots rather than maintaining independent business state. Public boards are consumers only.
+The Node server or the Durable Object is the sole authority. Clients receive complete state snapshots. Public boards are consumers only. Every mutation includes `expectedRevision`.
 
 ### Technology choices
 
@@ -346,7 +355,7 @@ No dependency installation is required because `package.json` declares no runtim
 
 From the project root, double-click `Start KartBoard.cmd`. It stops the previously tracked KartBoard process, starts the server hidden, verifies API version 2, and opens the controller. Use `Stop KartBoard.cmd` when finished.
 
-**Known portability limitation:** `scripts/start-kartboard.ps1` first checks a hard-coded bundled Node path from the computer on which the POC was built, then falls back to `node` on `PATH`. The fallback makes the project usable elsewhere once Node.js is normally installed, but the preferred hard-coded path should be removed or made discoverable before calling the launcher fully portable. `node` was not on `PATH` on the computer used for the latest documentation audit.
+The Windows launcher uses `node` on `PATH` and tells you to install Node.js 20 or newer if it is missing. `npm start` is the same server.
 
 ### Cross-platform/manual launch
 
@@ -370,34 +379,32 @@ Environment overrides are available for `KARTBOARD_HOST`, `KARTBOARD_PORT`, `KAR
 ### Tests
 
 ```text
-node --test
+npm test
 ```
 
-The current 16 tests cover reducer behavior, active-session preservation during rotation edits, active-class removal, duplicate names, pause/resume, invalid transitions, schema normalization/migration, persistence and backup recovery, API metadata/actions/errors, stale revisions, static serving, and traversal blocking. There are no automated browser/end-to-end interaction tests.
+`npm test` covers the original domain, migration, file backup, and HTTP cases, plus PIN login, rate limits, Origin checks, required revisions, the Durable Object repository, and hosted base-path routing. There are no automated browser/end-to-end interaction tests. CI runs lint (`tsc --noEmit`), `npm run build`, and `npm test`.
 
 ## Deployment and Portability
 
 ### Current deployment
 
-**IMPLEMENTED:** Local-only Node server on the operator's computer, serving every browser on the same trusted network. It needs no cloud service or internet once the network exists. This is the only deployment model present in the application source.
+**IMPLEMENTED:** Two runtimes. The hosted Worker is the track deployment (`docs/DEPLOYMENT.md`). `npm start` remains the offline LAN server. It needs no cloud account once the network exists.
 
 The project folder can be synchronised through OneDrive, but that does not itself deploy or synchronise a running event. Close the server before moving active use to another computer. Treat `kartboard.pid`, the live JSON state, backup state, and any temporary file as machine/runtime artifacts rather than source-of-truth configuration. Simultaneous OneDrive-backed server use from two computers is unsupported and risks conflicting state files.
 
 ### QR status
 
-- `KartBoard-iPhone-QR.png` — static public-board QR created for one local network.
-- `KartBoard-KAC-QR.png` — static controller QR created for one local network.
+- `KartBoard-iPhone-QR.png` — public board at `https://designacle.au/auth/apps/kartboard/board.html`.
+- `KartBoard-KAC-QR.png` — controller at `https://designacle.au/auth/apps/kartboard/control.html`.
 - `KartBoard-QR-Codes.png` — labelled side-by-side presentation of both.
 
-**Known limitation:** a local IP address can change between computers or networks. The QR images must be regenerated when the address changes. No QR-generation command or runtime feature is retained in the present project, despite pitch copy referring to fresh QR generation.
+Regenerate with `npm run qr` after a URL change. The old LAN address `192.168.50.131:4317` is no longer encoded.
 
 ### Hosted deployment discussion
 
-**PROPOSED:** A browser-based design can be hosted, but this is not a static-site-only application: shared mutation state and SSE require a server-side runtime or equivalent managed real-time backend.
+**IMPLEMENTED:** Hosting is a Cloudflare Worker plus one SQLite Durable Object, on the free plan, at `designacle.au/auth/apps/kartboard*`. See `docs/DEPLOYMENT.md`. The notes below are the requirements that decision satisfied:
 
-Low-cost hosting was discussed in principle. A small Node-capable service with persistent storage, or an equivalent low-cost managed application platform, could host a future version. No specific provider, price, free-tier constraint, domain strategy, or data-retention choice can be confidently reconstructed and none has been selected. Provider selection is therefore an **OPEN QUESTION** and should be researched afresh using current offerings.
-
-Before any hosted or shared-network deployment, the architecture already identifies the need for:
+Before hosted deployment, the architecture identified the need for:
 
 - authenticated KAC/controller roles and authorisation;
 - HTTPS;
@@ -418,9 +425,9 @@ Before any hosted or shared-network deployment, the architecture already identif
 
 ### Current trust model
 
-**IMPLEMENTED:** There is no login, controller secret, authorisation, TLS, CSRF token, or per-device identity. Anyone who can reach the local server and knows or discovers `/control.html` can change the board. The public board being view-only in its UI does not prevent someone from manually calling the action API.
+**IMPLEMENTED:** The public board, `GET /api/state`, `GET /api/meta`, and `GET /api/events` are readable with no login. `POST /api/action` requires a PIN session, a same-origin JSON request with `X-KartBoard-Request: 1`, and the caller's `expectedRevision`. See `docs/ACCESS.md`. Hosted transport is HTTPS. Local HTTP is only for a private LAN and does not set the Secure cookie flag.
 
-The current acceptable boundary is a trusted private local network used for a POC or supervised trial. Do not use the current version on an untrusted public Wi-Fi network, expose it to the internet, or port-forward it.
+The earlier open controller (anyone on the LAN who knew `/control.html`) is retired in 0.3.0, including for local mode.
 
 ### Existing safeguards
 
@@ -448,7 +455,7 @@ These are defensive implementation details, not a production access-control syst
 - **Known limitation:** launcher and generated-media build scripts contain machine-specific paths. The shipped app source otherwise resolves project files relative to the project root.
 - **Known limitation:** generated QR codes are network snapshots and can become stale.
 - **Known limitation:** runtime files and generated build-state/PID files are present in the synchronised folder; there is no version-control ignore policy in the current directory.
-- **Unknown:** the current directory contains no Git repository metadata accessible as a repository, so exact commits, authors, and early dates cannot be reconstructed.
+- The project is the `KartBoard/` directory of the HappyKarts git repository. Early dates before the import commit were reconstructed and are not git history.
 
 ## Decisions, Rejected Approaches, and Deferred Ideas
 
@@ -483,7 +490,7 @@ There is no known unresolved application bug reported after the last controller 
 
 1. **DECIDED / not yet completed:** prepare and conduct a supervised one-day Ipswich practice trial beside normal announcements.
 2. Define simple trial measures: repeated-question frequency, KAC effort, whether people could find the board, network stability, and qualitative feedback. The exact measures are an **OPEN QUESTION**.
-3. Remove or replace the hard-coded launcher Node path; add a friendly cross-platform readiness check.
+3. The hard-coded launcher Node path was removed in 0.3.0. `node` must be on `PATH`.
 4. Add a repeatable local-IP/QR generation workflow, clearly separating public and controller access.
 5. Manually test the current UI on representative iPhone, Android, Windows, and macOS devices, including long press, drag, reconnect, and two-controller revision conflicts.
 6. Decide whether the next milestone remains local-only or becomes hosted. If hosted, design identity, roles, HTTPS, tenancy, durable event storage, audit, and operations before implementation.

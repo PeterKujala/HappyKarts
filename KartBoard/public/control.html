@@ -1,7 +1,8 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KartBoard — Controller</title><link rel="stylesheet" href="/styles.css"></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KartBoard — Controller</title><link rel="stylesheet" href="styles.css"></head>
 <body class="control-shell"><div class="control-wrap">
-  <header class="control-top"><div><div class="brand"><span class="brand-mark">↗</span>KartBoard</div><div class="eyebrow" style="margin-top:5px">Practice controller</div></div><div class="control-top-actions"><button class="button ghost" id="openBoard">↗ <span>Open public board</span></button><button class="button" id="edit">⚙ <span>Day setup</span></button></div></header>
+  <header class="control-top"><div><div class="brand"><span class="brand-mark">↗</span>KartBoard</div><div class="eyebrow" style="margin-top:5px">Practice controller</div><div class="eyebrow" id="actor"></div></div><div class="control-top-actions"><button class="button ghost" id="logout" hidden>Sign out</button><button class="button ghost" id="openBoard">↗ <span>Open public board</span></button><button class="button" id="edit">⚙ <span>Day setup</span></button></div></header>
+  <div id="conflict" class="conflict-banner" hidden><p>Another controller changed KartBoard, so this change was not saved. The board has been refreshed.</p><button type="button" class="button lime" id="refreshBoard">Refresh</button></div>
   <main class="dashboard">
     <section>
       <div class="card session-card">
@@ -30,4 +31,6 @@
   </aside></div>
   <div class="dialog-actions setup-actions"><button type="button" class="button" id="cancelSetup">Cancel</button><button class="button primary" id="saveSetup">Save running order</button></div></form></dialog>
 <dialog id="editClass"><form class="dialog-inner compact-dialog" id="editClassForm"><div class="dialog-head"><div><div class="eyebrow">Edit class</div><h2>Class name</h2></div><button type="button" class="close" id="closeEditClass">×</button></div><div class="field"><label for="editClassName">Name shown to everyone</label><input id="editClassName" required maxlength="40"></div><div class="dialog-actions"><button type="button" class="button" id="cancelEditClass">Cancel</button><button class="button primary">Save</button></div></form></dialog>
-<div class="toast" id="toast">Updated</div><script type="module" src="/control.js"></script></body></html>
+<div class="toast" id="toast">Updated</div>
+<div id="pinGate" class="pin-gate"><form class="pin-card" id="pinForm"><div class="brand"><span class="brand-mark">↗</span>KartBoard</div><div class="eyebrow">Controller</div><h2>Who’s controlling?</h2><p class="pin-help">Pick your name and enter your PIN. This device stays signed in.</p><div class="pin-names" id="pinNames"></div><div class="pin-dots" id="pinDots" aria-live="polite">Enter PIN</div><div class="pin-pad" id="pinPad"></div><p class="pin-error" id="pinError" role="alert"></p><button class="button lime pin-submit" type="submit">Unlock</button></form></div>
+<script type="module" src="control.js"></script></body></html>

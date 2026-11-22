@@ -1,5 +1,8 @@
-const { randomUUID } = require('crypto');
 const { DomainError } = require('./errors');
+
+function randomUUID() {
+  return globalThis.crypto.randomUUID();
+}
 
 const SCHEMA_VERSION = 2;
 const MAX_CLASSES = 30;

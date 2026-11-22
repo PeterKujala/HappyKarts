@@ -8,6 +8,12 @@ node_modules/
 # Runtime files
 *.pid
 *.backup
+KartBoard/kartboard-state.json
+KartBoard/kartboard-users.json
+KartBoard/kartboard-session.secret
+KartBoard/worker/assets.generated.mjs
+KartBoard/dist/
+KartBoard/node_modules/
 
 # Inspection and temporary output
 *.inspect.ndjson

@@ -2,8 +2,14 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $pidFile = Join-Path $projectRoot 'kartboard.pid'
 $serverFile = Join-Path $projectRoot 'server.js'
-$bundledNode = 'C:\Users\peter\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe'
-$node = if (Test-Path -LiteralPath $bundledNode) { $bundledNode } else { (Get-Command node -ErrorAction Stop).Source }
+$nodeCommand = Get-Command node -ErrorAction SilentlyContinue
+if (-not $nodeCommand) {
+  Write-Host 'Node.js 20 or newer is not on PATH.' -ForegroundColor Red
+  Write-Host 'Install Node.js, then run this launcher again. You can also run: npm start'
+  Read-Host 'Press Enter to close'
+  exit 1
+}
+$node = $nodeCommand.Source
 
 if (Test-Path -LiteralPath $pidFile) {
   $existingPid = [int](Get-Content -LiteralPath $pidFile -Raw)

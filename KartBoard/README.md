@@ -1,48 +1,67 @@
 # KartBoard
 
-KartBoard is a local-first, real-time practice-session board for kart clubs. One KAC controller manages the running order while public boards on phones, tablets or displays update immediately.
+KartBoard is a real-time practice-session board for a kart club. One controller (the KAC) manages the running order. Public boards on phones, tablets, or a paddock display update live.
 
-It requires no internet connection, cloud account or installation. Devices only need to share the same local network.
+The hosted app is the one to use at the track:
 
-## Start and stop
+- Public board: https://designacle.au/auth/apps/kartboard/board.html
+- Controller: https://designacle.au/auth/apps/kartboard/control.html
 
-Double-click **Start KartBoard.cmd**. The launcher:
+The public board needs no login. The controller asks for a name and PIN on that device, then keeps a long-lived cookie. KartBoard is communication only. Lights, flags, officials, and announcements stay authoritative.
 
-1. Stops the previously tracked KartBoard process, if present.
-2. Starts the current server in the background.
-3. Confirms that the browser and server use the same API version.
-4. Opens the KAC controller.
+A local server is still available for a paddock with no internet. See [Local network](#local-network).
 
-Double-click **Stop KartBoard.cmd** when finished.
+## Controller access
 
-The server can also be run from a terminal with `node server.js`.
+PINs are not stored in git. On a computer with this project:
 
-## Addresses
+```text
+node scripts/manage-users.mjs add --name "Russell"
+node scripts/manage-users.mjs list
+```
 
-- Controller on this computer: http://127.0.0.1:4317/control.html
-- Public board on this computer: http://127.0.0.1:4317/board.html
-- Phone or tablet: `http://COMPUTER-IP:4317/board.html`
-- KAC phone or tablet: `http://COMPUTER-IP:4317/control.html`
+The PIN is read from the `KARTBOARD_PIN` environment variable or from a prompt. It is not accepted as a command argument. For the hosted Worker, upload the same file as a secret:
 
-Windows may ask whether to allow Node.js through the firewall. Allow **Private networks** only. Do not forward port 4317 through a router or use this prototype on an untrusted public network.
+```text
+node scripts/manage-users.mjs export | npx wrangler secret put KARTBOARD_USERS
+```
+
+Details are in [docs/CONFIGURATION.md](docs/CONFIGURATION.md), [docs/ACCESS.md](docs/ACCESS.md), and [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Development
 
 ```text
-node --test
-node server.js
+npm install
+npm test
+npm run typecheck
+npm run build
+npm start
 ```
 
-The application uses only Node.js built-ins and browser-native APIs. There is no dependency installation or build step.
+`npm test` covers the domain, the file repository, PIN login, rate limits, Origin checks, revision conflicts, the Durable Object storage adapter, and hosted base-path routing. `npm run build` bundles the Worker with `wrangler deploy --dry-run` and does not deploy. `npm run typecheck` is `tsc --noEmit` with `checkJs`.
 
-## State and recovery
+## Local network
 
-Live state is stored in `kartboard-state.json`. The repository automatically migrates older state, maintains stable class IDs and keeps the prior write in `kartboard-state.json.backup`. A temporary file is used during saves to reduce the risk of partial JSON.
+```text
+npm start
+```
+
+or double-click **Start KartBoard.cmd** on Windows. The launcher uses `node` on `PATH` (Node.js 20 or newer).
+
+- Controller on this computer: http://127.0.0.1:4317/control.html
+- Public board on this computer: http://127.0.0.1:4317/board.html
+- Another device: `http://COMPUTER-IP:4317/board.html` or `control.html`
+
+Local mode uses the same PIN login and revision checks. The session cookie is `HttpOnly` and `SameSite=Strict`. Browsers omit `Secure` on plain `http://`, which is what a LAN address is. The hosted site sets `Secure` because it is HTTPS.
+
+Allow Node.js on **Private networks** only. Do not forward port 4317.
+
+State is stored in `kartboard-state.json` (gitignored) with one backup. `kartboard-state.example.json` shows the shape. If the file is missing, the server starts from the default Ipswich practice day.
+
+## QR codes
+
+`KartBoard-iPhone-QR.png`, `KartBoard-KAC-QR.png`, and `KartBoard-QR-Codes.png` point at the hosted board and controller. Regenerate them with `npm run qr`.
 
 ## Scope
 
-KartBoard communicates approximate practice-day sequencing only. It is not official timing or track control. Physical lights, flags, officials and announcements remain authoritative.
-
-This POC deliberately has no controller authentication. Anyone on the same network who knows the controller address can operate it. Authentication is required before deployment on a shared or untrusted network.
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and extension guidance.
+KartBoard shares approximate practice-day sequencing only. It is not official timing or track control.
